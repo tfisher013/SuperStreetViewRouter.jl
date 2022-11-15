@@ -8,7 +8,7 @@ using Test
 DocMeta.setdocmeta!(
 MyJuliaPackage,
 :DocTestSetup,
-:(using MyJuliaPackage);
+:(using SuperStreetViewRouter);
 recursive=true
 )
 
