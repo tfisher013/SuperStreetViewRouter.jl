@@ -1,5 +1,5 @@
 module SuperStreetViewRouter
+using HashCode2014
 
-# Write your package code here.
-
+include("functions.jl")
 end

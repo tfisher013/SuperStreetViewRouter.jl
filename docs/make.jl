@@ -1,7 +1,9 @@
 using SuperStreetViewRouter
 using Documenter
 
-DocMeta.setdocmeta!(SuperStreetViewRouter, :DocTestSetup, :(using SuperStreetViewRouter); recursive=true)
+DocMeta.setdocmeta!(
+    SuperStreetViewRouter, :DocTestSetup, :(using SuperStreetViewRouter); recursive=true
+)
 
 makedocs(;
     modules=[SuperStreetViewRouter],
@@ -14,12 +16,7 @@ makedocs(;
         edit_link="main",
         assets=String[],
     ),
-    pages=[
-        "Home" => "index.md",
-    ],
+    pages=["Home" => "index.md"],
 )
 
-deploydocs(;
-    repo="github.com/tfisher013/SuperStreetViewRouter.jl",
-    devbranch="main",
-)
+deploydocs(; repo="github.com/tfisher013/SuperStreetViewRouter.jl", devbranch="main")
