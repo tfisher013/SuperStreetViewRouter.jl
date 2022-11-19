@@ -16,7 +16,6 @@ shared list of traversed streets and dedicating a separate thread to each path
 would likely improve performance.
 """
 function solve_graph_greedy(city::City=nothing)
-
     elapsed_street_penalty = 0.5
 
     if isnothing(city)
@@ -27,22 +26,29 @@ function solve_graph_greedy(city::City=nothing)
     city_graph = create_input_graph(city)
     traversed_streets = Dict()
 
-    for i in 1:city.nb_cars
-
+    for i in 1:(city.nb_cars)
         remaining_time = city.total_duration
         current_junction = city.starting_junction
 
         itinerary = Vector{Int64}(undef, 1)
         itinerary[1] = current_junction
 
+        count = 0
+
         while remaining_time > 0
+
+            #println("current junction = ", current_junction, ", ", remaining_time, " seconds remaining")
 
             # identify all valid streets available to traverse
             possible_streets = Street[]
             for neighbor in neighbors(city_graph, current_junction)
+                #println("  neighbor: ", neighbor)
                 outgoing_street = get_city_street(city, current_junction, neighbor)
-                if remaining_time + outgoing_street.duration <= city.total_duration
-                    push!(possible_streets, outgoing_street)
+                #println("  neighbor street: ", outgoing_street)
+                if !isnothing(outgoing_street)
+                    if remaining_time - outgoing_street.duration >= 0
+                        push!(possible_streets, outgoing_street)
+                    end
                 end
             end
 
@@ -60,7 +66,8 @@ function solve_graph_greedy(city::City=nothing)
                 street_value = street.distance / street.duration
 
                 if street in keys(traversed_streets)
-                    penalty_factor = elapsed_street_penalty ^ get(traversed_streets, street, 1)
+                    penalty_factor =
+                        elapsed_street_penalty^get(traversed_streets, street, 1)
                     street_value *= penalty_factor
                 end
 
@@ -72,19 +79,33 @@ function solve_graph_greedy(city::City=nothing)
             selected_street = possible_streets[max_street_value_index]
 
             # update traversed streets
-            if selected_street ∉ traversed_streets
+            if selected_street ∉ keys(traversed_streets)
                 traversed_streets[selected_street] = 1
             else
                 traversed_streets[selected_street] += 1
             end
 
+            if selected_street.bidirectional
+                reverse_selected_street = get_city_street(city, selected_street.endpointB, selected_street.endpointA)
+                if !isnothing(reverse_selected_street)
+                    if reverse_selected_street ∉ keys(traversed_streets)
+                        traversed_streets[reverse_selected_street] = 1
+                    else
+                        traversed_streets[reverse_selected_street] += 1
+                    end
+                end
+            end
+
             # update itinerary and elapsed time
             push!(itinerary, selected_street.endpointB)
             remaining_time -= selected_street.duration
+            current_junction = selected_street.endpointB
+
+            count += 1
         end
 
+        #println("count = ", count)
         solution[i] = itinerary
-
     end
 
     return Solution(solution)
