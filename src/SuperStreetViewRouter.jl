@@ -5,8 +5,10 @@ using SimpleWeightedGraphs
 using Statistics
 
 export benchmark_random_walk_solutions
-export create_input_graph
+export solve_graph_greedy
 
 include("functions.jl")
 include("graphs.jl")
+include("solver.jl")
+include("util.jl")
 end
