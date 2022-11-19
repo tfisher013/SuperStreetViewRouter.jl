@@ -25,23 +25,23 @@ function solve_graph_greedy(city::City=nothing)
 
     solution = Vector{Vector{Int}}(undef, city.nb_cars)
     city_graph = create_input_graph(city)
-    traversed_streets = Set()
+    traversed_streets = Dict()
 
     for i in 1:city.nb_cars
 
-        elapsed_time = city.total_duration
+        remaining_time = city.total_duration
         current_junction = city.starting_junction
 
         itinerary = Vector{Int64}(undef, 1)
         itinerary[1] = current_junction
 
-        while elapsed_time > 0
+        while remaining_time > 0
 
             # identify all valid streets available to traverse
             possible_streets = Street[]
             for neighbor in neighbors(city_graph, current_junction)
                 outgoing_street = get_city_street(city, current_junction, neighbor)
-                if elapsed_time + outgoing_street.duration <= city.total_duration
+                if remaining_time + outgoing_street.duration <= city.total_duration
                     push!(possible_streets, outgoing_street)
                 end
             end
@@ -59,8 +59,9 @@ function solve_graph_greedy(city::City=nothing)
                 street = possible_streets[i]
                 street_value = street.distance / street.duration
 
-                if street in traversed_streets
-                    street_value *= elapsed_street_penalty
+                if street in keys(traversed_streets)
+                    penalty_factor = elapsed_street_penalty ^ get(traversed_streets, street, 1)
+                    street_value *= penalty_factor
                 end
 
                 if street_value > max_street_value
@@ -70,14 +71,16 @@ function solve_graph_greedy(city::City=nothing)
             end
             selected_street = possible_streets[max_street_value_index]
 
-            # update traversed streets (if applicable)
+            # update traversed streets
             if selected_street ∉ traversed_streets
-                push!(traversed_streets, selected_street)
+                traversed_streets[selected_street] = 1
+            else
+                traversed_streets[selected_street] += 1
             end
 
             # update itinerary and elapsed time
             push!(itinerary, selected_street.endpointB)
-            elapsed_time -= selected_street.duration
+            remaining_time -= selected_street.duration
         end
 
         solution[i] = itinerary
