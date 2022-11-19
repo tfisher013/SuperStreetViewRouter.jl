@@ -1,10 +1,6 @@
-function first_function()
-    return println("working function!")
-end
-
 """
 
-    benchmark_random_walk_solution(test_iterations)
+    benchmark_random_walk_solution(test_iterations::Int64=10)
 
 Generates the provided number of random walk solutions and displays statistics
 on the lengths of the results. Intended to provide a lower bound upon which to 
