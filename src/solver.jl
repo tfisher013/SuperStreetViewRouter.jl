@@ -16,18 +16,18 @@ shared list of traversed streets and dedicating a separate thread to each path
 would likely improve performance.
 """
 function solve_graph_greedy(city::City=nothing)
-    solution = Vector{Vector{Int}}(undef, city.nb_cars)
+
     elapsed_street_penalty = 0.5
 
     if isnothing(city)
         city = read_city()
     end
 
+    solution = Vector{Vector{Int}}(undef, city.nb_cars)
     city_graph = create_input_graph(city)
     traversed_streets = Set()
 
-    for i in 1:(city.nb_cars)
-        println("Car ", i, " is pathing")
+    for i in 1:city.nb_cars
 
         elapsed_time = city.total_duration
         current_junction = city.starting_junction
@@ -80,7 +80,8 @@ function solve_graph_greedy(city::City=nothing)
             elapsed_time -= selected_street.duration
         end
 
-        push!(solution, itinerary)
+        solution[i] = itinerary
+
     end
 
     return Solution(solution)
