@@ -13,7 +13,7 @@ DocMeta.setdocmeta!(
         Aqua.test_all(SuperStreetViewRouter; ambiguities=false)
     end
     @testset verbose = true "Code formatting (JuliaFormatter.jl)" begin
-        @test format(SuperStreetViewRouter; verbose=true, overwrite=true)
+        @test format(SuperStreetViewRouter; verbose=true, overwrite=false)
     end
     @testset verbose = true "Doctests (Documenter.jl)" begin
         doctest(SuperStreetViewRouter)

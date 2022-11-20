@@ -1,7 +1,8 @@
 module SuperStreetViewRouter
 using Graphs
+using MetaGraphsNext
+
 using HashCode2014
-using SimpleWeightedGraphs
 using Statistics
 
 export benchmark_random_walk_solutions
