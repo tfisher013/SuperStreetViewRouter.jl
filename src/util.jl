@@ -6,7 +6,6 @@ Returns a Street object in the provided city that allows travel from the provide
 junction index to the provided end junction index. Returns nothing if no such Street is found.
 """
 function get_city_street(city::City, start_junction::Int64, end_junction::Int64)
-
     for street in city.streets
         if street.endpointA == start_junction
             if street.endpointB == end_junction

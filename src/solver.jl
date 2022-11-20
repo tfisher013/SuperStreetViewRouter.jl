@@ -8,7 +8,7 @@ city if none is provided. The greedy algorithm can be described as follows:
     highest "value" = length / time.
     - Traversed streets will be recorded.
     - Traversed streets will have their length decreased by a constant factor
-    to discourage but allow usage. This constant is likely a responsive to
+    to discourage but allow usage. This constant is likely responsive to
     optimization.
 
 Inefficient due to only routing a single path at a time. Implementing a
@@ -16,7 +16,7 @@ shared list of traversed streets and dedicating a separate thread to each path
 would likely improve performance.
 """
 function solve_graph_greedy(city::City=nothing)
-    elapsed_street_penalty = 0.5
+    elapsed_street_penalty = 0.1
 
     if isnothing(city)
         city = read_city()
