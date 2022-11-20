@@ -1,5 +1,5 @@
-using SuperStreetViewRouter
 using Documenter
+using SuperStreetViewRouter
 
 DocMeta.setdocmeta!(
     SuperStreetViewRouter, :DocTestSetup, :(using SuperStreetViewRouter); recursive=true

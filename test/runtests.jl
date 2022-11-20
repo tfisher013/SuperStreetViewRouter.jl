@@ -1,7 +1,7 @@
-using SuperStreetViewRouter
 using Aqua
 using Documenter
 using JuliaFormatter
+using SuperStreetViewRouter
 using Test
 
 DocMeta.setdocmeta!(
