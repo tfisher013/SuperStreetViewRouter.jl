@@ -5,7 +5,7 @@ using SimpleWeightedGraphs
 using Statistics
 
 export benchmark_random_walk_solutions
-export get_total_city_cost, get_total_city_length
+export get_total_city_cost, get_total_city_length, generate_output_file
 export solve_graph_greedy
 
 include("functions.jl")

@@ -1,5 +1,41 @@
 """
 
+    generate_output_file(solution::Solution, path=nothing)
+
+Creates a text file using the provided Solution object and saves it
+to the specified path.
+"""
+function generate_output_file(solution::Solution, path=nothing)
+    if isnothing(path)
+        path = pwd() * "/output.txt"
+    end
+
+    if !isfile(path)
+        touch(path)
+    end
+
+    open(path, "w") do f
+
+        # write the number of cars (or paths)
+        write(f, string(length(solution.itineraries)))
+        write(f, "\n")
+
+        for itinerary in solution.itineraries
+            # write the number of junctions in the itinerary before listing the junctions
+            write(f, string(length(itinerary)))
+            write(f, "\n")
+
+            # list the junctions in the itinerary
+            for junction in itinerary
+                write(f, string(junction))
+                write(f, "\n")
+            end
+        end
+    end
+end
+
+"""
+
     get_city_street(city::City, start_junction::Int64, end_junction::Int64) 
 
 Returns a Street object in the provided city that allows travel from the provided start
