@@ -2,8 +2,8 @@
 
     get_city_street(city::City, start_junction::Int64, end_junction::Int64) 
 
-Returns the Street object in the provided city corresponding to provided start
-and end junctions. Returns nothing if no such Street is found.
+Returns a Street object in the provided city that allows travel from the provided start
+junction index to the provided end junction index. Returns nothing if no such Street is found.
 """
 function get_city_street(city::City, start_junction::Int64, end_junction::Int64)
 
@@ -11,6 +11,14 @@ function get_city_street(city::City, start_junction::Int64, end_junction::Int64)
         if street.endpointA == start_junction
             if street.endpointB == end_junction
                 return street
+            end
+        end
+
+        if street.bidirectional
+            if street.endpointB == start_junction
+                if street.endpointA == end_junction
+                    return street
+                end
             end
         end
     end

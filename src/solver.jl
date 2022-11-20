@@ -33,18 +33,12 @@ function solve_graph_greedy(city::City=nothing)
         itinerary = Vector{Int64}(undef, 1)
         itinerary[1] = current_junction
 
-        count = 0
-
         while remaining_time > 0
-
-            #println("current junction = ", current_junction, ", ", remaining_time, " seconds remaining")
 
             # identify all valid streets available to traverse
             possible_streets = Street[]
             for neighbor in neighbors(city_graph, current_junction)
-                #println("  neighbor: ", neighbor)
                 outgoing_street = get_city_street(city, current_junction, neighbor)
-                #println("  neighbor street: ", outgoing_street)
                 if !isnothing(outgoing_street)
                     if remaining_time - outgoing_street.duration >= 0
                         push!(possible_streets, outgoing_street)
@@ -53,15 +47,15 @@ function solve_graph_greedy(city::City=nothing)
             end
 
             if length(possible_streets) == 0
-                # this could happen if we don't have enough time to traverse
-                # any street with our remaining time
+                # this could happen if we can't traverse
+                # any outgoing street with our remaining time
                 break
             end
 
             # choose the best street to take
             max_street_value = -1
             max_street_value_index = 1
-            for i in 1:length(possible_streets)
+            for i in 1:lastindex(possible_streets)
                 street = possible_streets[i]
                 street_value = street.distance / street.duration
 
@@ -85,26 +79,17 @@ function solve_graph_greedy(city::City=nothing)
                 traversed_streets[selected_street] += 1
             end
 
-            if selected_street.bidirectional
-                reverse_selected_street = get_city_street(city, selected_street.endpointB, selected_street.endpointA)
-                if !isnothing(reverse_selected_street)
-                    if reverse_selected_street ∉ keys(traversed_streets)
-                        traversed_streets[reverse_selected_street] = 1
-                    else
-                        traversed_streets[reverse_selected_street] += 1
-                    end
-                end
-            end
-
             # update itinerary and elapsed time
-            push!(itinerary, selected_street.endpointB)
+            end_junction = if (current_junction == selected_street.endpointA)
+                selected_street.endpointB
+            else
+                selected_street.endpointA
+            end
+            push!(itinerary, end_junction)
             remaining_time -= selected_street.duration
-            current_junction = selected_street.endpointB
-
-            count += 1
+            current_junction = end_junction
         end
 
-        #println("count = ", count)
         solution[i] = itinerary
     end
 
