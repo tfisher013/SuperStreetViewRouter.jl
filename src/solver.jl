@@ -15,14 +15,11 @@ Inefficient due to only routing a single path at a time. Implementing a
 shared list of traversed streets and dedicating a separate thread to each path
 would likely improve performance.
 """
-function solve_graph_greedy(city=nothing)
+function solve_graph_greedy() end
+
+function solve_graph_greedy(city_graph)
     elapsed_street_penalty = 0.1
 
-    if isnothing(city)
-        city = read_city()
-    end
-
-    city_graph = create_input_graph(city)
     solution = Vector{Vector{Int}}(undef, city_graph.graph_data.nb_cars)
     traversed_streets = Dict()
 
@@ -83,4 +80,9 @@ function solve_graph_greedy(city=nothing)
     end
 
     return Solution(solution)
+end
+
+function solve_graph_greedy(city::City=read_city())
+    city_graph = create_input_graph(city)
+    return solve_graph_greedy(city_graph)
 end
