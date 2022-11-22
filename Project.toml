@@ -4,6 +4,7 @@ authors = ["Thomas Fisher <80178894+tfisher013@users.noreply.github.com> and con
 version = "0.1.0"
 
 [deps]
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 HashCode2014 = "7bbed249-721d-42ac-b1f6-7cf884be0fbe"
 MetaGraphsNext = "fa8bd995-216d-47f1-8a91-f3b68fbeb377"
