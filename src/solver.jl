@@ -47,13 +47,12 @@ function solve_graph_greedy(city_meta_graph; elapsed_street_penalty=0.1)
             end
 
             # choose the best street to take
-            selected_street = find_best_street(
+            end_junction, selected_street = find_best_street(
                 possible_streets, traversed_streets, elapsed_street_penalty
             )
-            end_junction = HashCode2014.get_street_end(current_junction, selected_street)
 
             # update traversed streets
-            traversed_streets[selected_street] += 1
+            traversed_streets[selected_street.id] += 1
 
             push!(itinerary, end_junction)
             remaining_time -= selected_street.duration
@@ -72,10 +71,12 @@ end
 
 """
 function get_possible_streets(city_graph, current_junction, remaining_time)
-    possible_streets = Vector{Street}(undef, 0)
-    for s in outedgevals(city_graph, current_junction)
+    possible_streets = Vector{Tuple{Int64,StreetData}}(undef, 0)
+    # for s in outedgevals(city_graph, current_junction)
+    for n in outneighbors(city_graph, current_junction)
+        s = get_edgeval(city_graph, current_junction, n, 1)
         if remaining_time - s.duration >= 0.0
-            push!(possible_streets, s)
+            push!(possible_streets, (n, s))
         end
     end
 
@@ -91,16 +92,17 @@ function find_best_street(possible_streets, traversed_streets, elapsed_street_pe
     max_street_value = -1.0
 
     # This will always be overwritten
-    best_street = first(possible_streets)
-    for s in possible_streets
-        street_value =
-            s.distance / s.duration * elapsed_street_penalty^get(traversed_streets, s, 0)
+    end_point, best_street = first(possible_streets)
+    for i in eachindex(possible_streets)
+        s = possible_streets[i][2]
+        street_value = s.value * elapsed_street_penalty^get(traversed_streets, s.id, 0)
 
         if street_value > max_street_value
             best_street = s
+            end_point = possible_streets[i][1]
             max_street_value = street_value
         end
     end
 
-    return best_street
+    return (end_point, best_street)
 end

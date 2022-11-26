@@ -19,47 +19,45 @@ vertices are Junction indices (as stored in the City object) and edges are
 street lengths.
 """
 function create_input_graph(city::City)
-    # n = length(city.streets)
     # Each node only stores outgoing edges -> heavily reduced memory
+    # but DO NOT access incoming edges
     city_graph = ValOutDiGraph(
         length(city.junctions);
         vertexval_types=(Int64,),
         vertexval_init=v -> (v,),
-        edgeval_types=(Street,),
+        edgeval_types=(StreetData,),
     )
     city_data = CityData(city)
 
-    for s in city.streets
+    for (i, s) in enumerate(city.streets)
         A = s.endpointA
         B = s.endpointB
+        sdata = StreetData(s, i)
 
         #* Define edges
-        t = add_edge!(city_graph, A, B, (s,))
-        @assert t
+        t = add_edge!(city_graph, A, B, (sdata,))
         if s.bidirectional
-            t = add_edge!(city_graph, B, A, (s,))
-            @assert t
+            t = add_edge!(city_graph, B, A, (sdata,))
         end
     end
 
     return CityGraph(city_data, city_graph)
 end
 
-# """
+"""
 
-#     StreetData(duration::Int, distance::Int)
+    StreetData(duration::Int, distance::Int)
 
-# Structure storing the data required for greedy algorithm in edges of city graph
-# """
-# struct StreetData
-#     duration::Int # time cost of traversing the street (seconds)
-#     distance::Int
-#     value::Float64 # distance/duration -> maximise this
+Structure storing the data required for greedy algorithm in edges of city graph
+"""
+struct StreetData
+    duration::Int # time cost of traversing the street (seconds)
+    value::Float64 # distance/duration -> maximise this
+    id::Int # index of street in city.streets
 
-#     StreetData(duration::Int, distance::Int) = new(duration, distance / duration)
-#     # StreetData(s::Street) = new(s.duration,s.distance / s.duration)
-#     StreetData(s::Street) = new(s.duration, s.distance, s.distance / s.duration)
-# end
+    StreetData(duration::Int, distance::Int, i::Int) = new(duration, distance / duration, i)
+    StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i)
+end
 
 # function get_neighbor_labels(graph, index)
 #     # return label_for.(graph, neighbors(graph, code_for(graph, index)))
