@@ -1,3 +1,10 @@
+"""
+    CityData(total_duration::Int, nb_cars::Int, starting_junction::Int)
+
+A struct that holds the metadata for a city. Has constructor(s)
+
+    CityData(c::City)
+"""
 struct CityData
     total_duration::Int # Total time available for car itineraries (seconds)
     nb_cars::Int # number of cars in the fleed
@@ -5,9 +12,33 @@ struct CityData
     CityData(c::City) = new(c.total_duration, c.nb_cars, c.starting_junction)
 end
 
+"""
+    CityGraph(data::CityData, graph::ValOutDiGraph)
+
+A graph representation of a City object. The graph is a SimpleValueGraphs.jl ValOutDiGraph, and the data is a CityData object.
+"""
 struct CityGraph
     data::CityData
     graph::ValOutDiGraph
+end
+
+"""
+
+    StreetData(duration::Int, value::Int, id::Int)
+
+Structure storing the data required for greedy algorithm in edges of city graph. Has constructors
+    
+    StreetData(street::Street)
+    StreetData(street::Street, id::Int)
+
+"""
+struct StreetData
+    duration::Int # time cost of traversing the street (seconds)
+    value::Float64 # distance/duration -> maximise this
+    id::Int # index of street in city.streets
+
+    StreetData(duration::Int, distance::Int, i::Int) = new(duration, distance / duration, i)
+    StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i)
 end
 
 """
@@ -43,35 +74,3 @@ function create_input_graph(city::City)
 
     return CityGraph(city_data, city_graph)
 end
-
-"""
-
-    StreetData(duration::Int, distance::Int)
-
-Structure storing the data required for greedy algorithm in edges of city graph
-"""
-struct StreetData
-    duration::Int # time cost of traversing the street (seconds)
-    value::Float64 # distance/duration -> maximise this
-    id::Int # index of street in city.streets
-
-    StreetData(duration::Int, distance::Int, i::Int) = new(duration, distance / duration, i)
-    StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i)
-end
-
-# function get_neighbor_labels(graph, index)
-#     # return label_for.(graph, neighbors(graph, code_for(graph, index)))
-#     return Tuple(label_for(graph, s) for s in neighbors(graph, code_for(graph, index)))
-# end
-
-# function n_cars(city_graph)
-#     return city_graph.graph_data.nb_cars
-# end
-
-# function total_time(city_graph)
-#     return city_graph.graph_data.total_duration
-# end
-
-# function starting_junction(city_graph)
-#     return city_graph.graph_data.starting_junction
-# end

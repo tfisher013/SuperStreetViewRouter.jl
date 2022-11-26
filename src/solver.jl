@@ -69,6 +69,8 @@ end
 
     get_possible_streets(city_graph)
 
+Returns a list of all streets that can be traversed from the provided junction.
+The streets are tuples of (end_junction, street_data)
 """
 function get_possible_streets(city_graph, current_junction, remaining_time)
     possible_streets = Vector{Tuple{Int64,StreetData}}(undef, 0)
@@ -87,6 +89,8 @@ end
 
     find_best_street(possible_streets)
 
+Returns the best street to traverse from the provided list of possible streets. The best street is the one with the highest value,
+or the one with the highest value * elapsed_street_penalty ^ times traversed if it has been traversed before.
 """
 function find_best_street(possible_streets, traversed_streets, elapsed_street_penalty)
     max_street_value = -1.0
