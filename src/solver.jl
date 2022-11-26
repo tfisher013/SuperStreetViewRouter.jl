@@ -156,6 +156,7 @@ end
 function get_path_value(path, traversed_streets, elapsed_street_penalty)
     path_value = 0.0
     temp_traversed_streets = DefaultDict(0)
+
     for street in path
         v = street[2].value
         if street[2].id in keys(traversed_streets)
@@ -173,6 +174,7 @@ end
 function find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
     max_path_value = -1.0
     best_path = first(possible_paths)
+    # Threads.@threads for path in possible_paths
     for path in possible_paths
         path_value = get_path_value(path, traversed_streets, elapsed_street_penalty)
 
