@@ -1,6 +1,7 @@
 module SuperStreetViewRouter
 using Graphs
-using MetaGraphsNext
+# using MetaGraphsNext
+using SimpleValueGraphs
 
 using HashCode2014
 using Statistics

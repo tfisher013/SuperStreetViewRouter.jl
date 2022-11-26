@@ -20,14 +20,16 @@ function solve_graph_greedy(city::City=read_city(); elapsed_street_penalty=0.1)
     return solve_graph_greedy(city_graph; elapsed_street_penalty=elapsed_street_penalty)
 end
 
-function solve_graph_greedy(city_graph; elapsed_street_penalty=0.1)
+function solve_graph_greedy(city_meta_graph; elapsed_street_penalty=0.1)
+    city_data = city_meta_graph.data
+    city_graph = city_meta_graph.graph
 
-    solution = Vector{Vector{Int}}(undef, city_graph.graph_data.nb_cars)
+    solution = Vector{Vector{Int}}(undef, city_data.nb_cars)
     traversed_streets = DefaultDict(0)
 
-    for i in 1:(n_cars(city_graph))
-        remaining_time = total_time(city_graph)
-        current_junction = starting_junction(city_graph)
+    for i in 1:(city_data.nb_cars)
+        remaining_time = city_data.total_duration
+        current_junction = city_data.starting_junction
 
         itinerary = Vector{typeof(current_junction)}(undef, 1)
         itinerary[1] = current_junction
@@ -45,9 +47,10 @@ function solve_graph_greedy(city_graph; elapsed_street_penalty=0.1)
             end
 
             # choose the best street to take
-            end_junction, selected_street = find_best_street(
+            selected_street = find_best_street(
                 possible_streets, traversed_streets, elapsed_street_penalty
             )
+            end_junction = HashCode2014.get_street_end(current_junction, selected_street)
 
             # update traversed streets
             traversed_streets[selected_street] += 1
@@ -57,7 +60,7 @@ function solve_graph_greedy(city_graph; elapsed_street_penalty=0.1)
             current_junction = end_junction
         end
 
-        solution[i] = @. parse(Int, String(itinerary))
+        solution[i] = itinerary
     end
 
     return Solution(solution)
@@ -69,13 +72,10 @@ end
 
 """
 function get_possible_streets(city_graph, current_junction, remaining_time)
-    possible_streets = Vector{Tuple{Symbol, Street}}(undef, 0)
-    # possible_streets = Vector{Tuple{Symbol,Street}}(undef, 0)
-    for neighbor in get_neighbor_labels(city_graph, current_junction)
-        outgoing_street = city_graph[current_junction, neighbor]
-
-        if remaining_time - outgoing_street.duration >= 0.0
-            push!(possible_streets, (neighbor, outgoing_street))
+    possible_streets = Vector{Street}(undef, 0)
+    for s in outedgevals(city_graph, current_junction)
+        if remaining_time - s.duration >= 0.0
+            push!(possible_streets, s)
         end
     end
 
@@ -89,18 +89,18 @@ end
 """
 function find_best_street(possible_streets, traversed_streets, elapsed_street_penalty)
     max_street_value = -1.0
-    max_street_value_index = 0
-    for i in eachindex(possible_streets)
-        street = possible_streets[i][2]
-        street_value = street.distance / street.duration
 
-        street_value *= elapsed_street_penalty^get(traversed_streets, street, 0)
+    # This will always be overwritten
+    best_street = first(possible_streets)
+    for s in possible_streets
+        street_value =
+            s.distance / s.duration * elapsed_street_penalty^get(traversed_streets, s, 0)
 
         if street_value > max_street_value
+            best_street = s
             max_street_value = street_value
-            max_street_value_index = i
         end
     end
 
-    return possible_streets[max_street_value_index]
+    return best_street
 end
