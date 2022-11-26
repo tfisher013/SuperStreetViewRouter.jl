@@ -10,7 +10,7 @@ using DataStructures
 
 export benchmark_random_walk_solutions
 export get_total_city_cost, get_total_city_length, generate_output_file
-export solve_graph_greedy
+export solve_graph_greedy, create_input_graph
 
 include("functions.jl")
 include("graphs.jl")

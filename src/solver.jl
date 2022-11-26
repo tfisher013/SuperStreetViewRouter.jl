@@ -72,7 +72,7 @@ end
 """
 function get_possible_streets(city_graph, current_junction, remaining_time)
     possible_streets = Vector{Tuple{Int64,StreetData}}(undef, 0)
-    # for s in outedgevals(city_graph, current_junction)
+
     for n in outneighbors(city_graph, current_junction)
         s = get_edgeval(city_graph, current_junction, n, 1)
         if remaining_time - s.duration >= 0.0
