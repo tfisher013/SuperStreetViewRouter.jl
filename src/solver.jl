@@ -155,9 +155,17 @@ end
 
 function get_path_value(path, traversed_streets, elapsed_street_penalty)
     path_value = 0.0
+    temp_traversed_streets = DefaultDict(0)
     for street in path
-        path_value +=
-            street[2].value * elapsed_street_penalty^get(traversed_streets, street[2].id, 0)
+        v = street[2].value
+        if street[2].id in keys(traversed_streets)
+            v *= elapsed_street_penalty^get(traversed_streets, street[2].id, 0)
+        end
+        if street[2].id in keys(traversed_streets)
+            v *= elapsed_street_penalty^get(temp_traversed_streets, street[2].id, 0)
+        end
+        path_value += v
+        temp_traversed_streets[street[2].id] += 1
     end
     return path_value
 end
