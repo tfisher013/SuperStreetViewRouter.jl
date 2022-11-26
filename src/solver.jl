@@ -35,14 +35,10 @@ function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth)
         itinerary[1] = current_junction
 
         while remaining_time > 0.0
+            # identify all valid paths available to traverse
             possible_paths = get_possible_paths(
                 city_graph, current_junction, remaining_time, depth
             )
-
-            # identify all valid streets available to traverse
-            # possible_streets = get_possible_streets(
-            #     city_graph, current_junction, remaining_time
-            # )
 
             # this could happen if we can't traverse any outgoing street with our remaining time
             if length(possible_paths) == 0
@@ -51,15 +47,14 @@ function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth)
 
             # choose the best street to take
             path = find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
+            end_junction, street = first(path)
 
             # update traversed streets
-            for street in last.(path)
-                traversed_streets[street.id] += 1
-                remaining_time -= street.duration
-            end
+            traversed_streets[street.id] += 1
+            remaining_time -= street.duration
 
-            append!(itinerary, first.(path)...)
-            current_junction = last(path)[1]
+            append!(itinerary, end_junction)
+            current_junction = end_junction
         end
 
         solution[i] = itinerary
@@ -100,13 +95,13 @@ function find_best_street(possible_streets, traversed_streets, elapsed_street_pe
 
     # This will always be overwritten
     end_point, best_street = first(possible_streets)
-    for i in eachindex(possible_streets)
-        s = possible_streets[i][2]
+    for (n,s) in possible_streets
+        # s = possible_streets[i][2]
         street_value = s.value * elapsed_street_penalty^get(traversed_streets, s.id, 0)
 
         if street_value > max_street_value
             best_street = s
-            end_point = possible_streets[i][1]
+            end_point = n
             max_street_value = street_value
         end
     end
@@ -142,31 +137,24 @@ function get_possible_paths(city_graph, current_junction, remaining_time, depth)
 end
 
 function path_time(path)
-    time = 0
-    for i in eachindex(path)
-        if i == 1
-            time = path[i][2].duration
-        else
-            time += path[i][2].duration
-        end
-    end
-    return time
+    return sum(s[2].duration for s in path)
 end
 
 function get_path_value(path, traversed_streets, elapsed_street_penalty)
     path_value = 0.0
     temp_traversed_streets = DefaultDict(0)
 
-    for street in path
-        v = street[2].value
-        if street[2].id in keys(traversed_streets)
-            v *= elapsed_street_penalty^get(traversed_streets, street[2].id, 0)
+    for street in last.(path)
+        v = street.value
+        if street.id in keys(traversed_streets)
+            v *= elapsed_street_penalty^get(traversed_streets, street.id, 0)
         end
-        if street[2].id in keys(traversed_streets)
-            v *= elapsed_street_penalty^get(temp_traversed_streets, street[2].id, 0)
+        if street.id in keys(temp_traversed_streets)
+            v *= elapsed_street_penalty^get(temp_traversed_streets, street.id, 0)
         end
+
         path_value += v
-        temp_traversed_streets[street[2].id] += 1
+        temp_traversed_streets[street.id] += 1
     end
     return path_value
 end
