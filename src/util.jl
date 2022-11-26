@@ -2,7 +2,7 @@
 
     generate_output_file(solution::Solution, path=nothing)
 
-Creates a text file using the provided Solution object and saves it
+Creates a text file (.txt) using the provided Solution object and saves it
 to the specified path.
 """
 function generate_output_file(solution::Solution, path=nothing)
@@ -38,8 +38,9 @@ end
 
     get_city_street(city::City, start_junction::Int64, end_junction::Int64) 
 
-Returns a Street object in the provided city that allows travel from the provided start
-junction index to the provided end junction index. Returns nothing if no such Street is found.
+Returns a Street object in the provided City that allows travel from the provided start
+junction index to the provided end junction index whether one-directional or bi-directional. 
+Returns nothing if no such Street is found.
 """
 function get_city_street(city::City, start_junction::Int64, end_junction::Int64)
     for street in city.streets
@@ -65,7 +66,7 @@ end
 
     get_total_city_cost(city::City)
 
-Returns the total time required to traverse all streets of the provided city in seconds.
+Returns the total time (in seconds) required to traverse all streets of the provided city.
 """
 function get_total_city_cost(city::City)
     total_cost = 0
@@ -80,7 +81,7 @@ end
 
     get_total_city_length(city::City)
 
-Returns the total length of all streets in the provided city in meters.
+Returns the total length (in meters) of all streets in the provided city.
 """
 function get_total_city_length(city::City)
     total_distance = 0

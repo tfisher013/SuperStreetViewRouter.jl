@@ -14,8 +14,8 @@ end
 
     create_input_graph(city::City)
 
-Returns a SimpleWeightedDiGraph representing the provided City object. Graph
-vertices are Junction indices (as stored in the City object) and edges are
+Returns a SimpleWeightedDiGraph representing the provided City object in a directed graph. 
+Graph vertices are Junction indices (as stored in the City object) and edges are weighted by
 street lengths.
 """
 function create_input_graph(city::City)
