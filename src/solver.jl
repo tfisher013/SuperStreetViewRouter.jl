@@ -27,6 +27,7 @@ function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth)
     solution = Vector{Vector{Int}}(undef, city_data.nb_cars)
     traversed_streets = DefaultDict(0)
 
+    # Threads.@threads for i in 1:(city_data.nb_cars)
     for i in 1:(city_data.nb_cars)
         remaining_time = city_data.total_duration
         current_junction = city_data.starting_junction
@@ -128,8 +129,12 @@ function get_possible_paths(city_graph, current_junction, remaining_time, depth)
             end
         else
             new_paths = get_possible_streets(city_graph, first(last(path)), remaining_time)
-            for p in new_paths
-                push!(possible_paths, [path..., p])
+            if length(new_paths) == 0
+                push!(final_paths, path)
+            else
+                for p in new_paths
+                    push!(possible_paths, [path..., p])
+                end
             end
         end
     end
