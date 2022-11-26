@@ -7,14 +7,14 @@ version = "0.1.0"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 HashCode2014 = "7bbed249-721d-42ac-b1f6-7cf884be0fbe"
-MetaGraphsNext = "fa8bd995-216d-47f1-8a91-f3b68fbeb377"
 SimpleValueGraphs = "b43c691f-cac2-5415-8122-396fe16a49fc"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
+DataStructures = "0.18.13"
 Graphs = "1.7.4"
 HashCode2014 = "0.1.0"
-MetaGraphsNext = "0.4.0"
+SimpleValueGraphs = "0.4.1"
 julia = "1.8"
 
 [extras]
