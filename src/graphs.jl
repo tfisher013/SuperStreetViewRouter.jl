@@ -19,7 +19,7 @@ A graph representation of a City object. The graph is a SimpleValueGraphs.jl Val
 """
 struct CityGraph
     data::CityData
-    graph::ValOutDiGraph
+    graph::AbstractValGraph
 end
 
 """
