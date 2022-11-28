@@ -25,7 +25,7 @@ function solve_graph_greedy(city_meta_graph; elapsed_street_penalty=0.1)
     city_graph = city_meta_graph.graph
 
     solution = Vector{Vector{Int}}(undef, city_data.nb_cars)
-    traversed_streets = DefaultDict(0)
+    traversed_streets = DefaultDict{Int, Int}(0)
 
     for i in 1:(city_data.nb_cars)
         remaining_time = city_data.total_duration
