@@ -27,7 +27,6 @@ function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth)
     solution = Vector{Vector{Int}}(undef, city_data.nb_cars)
     traversed_streets = DefaultDict(0)
 
-    # Threads.@threads for i in 1:(city_data.nb_cars)
     for i in 1:(city_data.nb_cars)
         remaining_time = city_data.total_duration
         current_junction = city_data.starting_junction
@@ -86,7 +85,7 @@ end
 
 """
 
-    find_best_street(possible_streets)
+    find_best_street(possible_streets, traversed_streets, elapsed_street_penalty)
 
 Returns the best street to traverse from the provided list of possible streets. The best street is the one with the highest value,
 or the one with the highest value * elapsed_street_penalty ^ times traversed if it has been traversed before.
@@ -96,14 +95,15 @@ function find_best_street(possible_streets, traversed_streets, elapsed_street_pe
 
     # This will always be overwritten
     end_point, best_street = first(possible_streets)
-    for (n,s) in possible_streets
-        # s = possible_streets[i][2]
-        street_value = s.value * elapsed_street_penalty^get(traversed_streets, s.id, 0)
+    if length(possible_streets) > 1
+        for (n,s) in possible_streets[1:end]
+            street_value = s.value * elapsed_street_penalty^get(traversed_streets, s.id, 0)
 
-        if street_value > max_street_value
-            best_street = s
-            end_point = n
-            max_street_value = street_value
+            if street_value > max_street_value
+                best_street = s
+                end_point = n
+                max_street_value = street_value
+            end
         end
     end
 
