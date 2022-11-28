@@ -2,6 +2,7 @@ using Aqua
 using Documenter
 using JuliaFormatter
 using SuperStreetViewRouter
+using HashCode2014
 using Test
 
 DocMeta.setdocmeta!(
@@ -17,5 +18,10 @@ DocMeta.setdocmeta!(
     end
     @testset verbose = true "Doctests (Documenter.jl)" begin
         doctest(SuperStreetViewRouter)
+    end
+    @testset verbose = true "Solution feasibility" begin
+        city = read_city()
+        solution = solve_graph_greedy()
+        @test is_feasible(solution, city)
     end
 end

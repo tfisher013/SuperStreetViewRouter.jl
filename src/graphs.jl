@@ -17,9 +17,9 @@ end
 
 A graph representation of a City object. The graph is a SimpleValueGraphs.jl ValOutDiGraph, and the data is a CityData object.
 """
-struct CityGraph
+struct CityGraph{T<:SimpleValueGraphs.AbstractValGraph}
     data::CityData
-    graph::AbstractValGraph
+    graph::T
 end
 
 """
