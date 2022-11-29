@@ -6,10 +6,9 @@ Generates the provided number of random walk solutions and displays statistics
 on the lengths of the results. Intended to provide a lower bound upon which to 
 improve.
 """
-function benchmark_random_walk_solutions(test_iterations::Int64=10)
+function benchmark_random_walk_solutions(city::City, test_iterations::Int64=10)
     println("Generating solutions...")
 
-    city = read_city()
     rand_solns_length_array = zeros(test_iterations)
     for i in 1:test_iterations
         rand_soln = random_walk(city)
