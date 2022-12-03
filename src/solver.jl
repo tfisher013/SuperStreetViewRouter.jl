@@ -15,12 +15,14 @@ Inefficient due to only routing a single path at a time. Implementing a
 shared list of traversed streets and dedicating a separate thread to each path
 would likely improve performance.
 """
-function solve_graph_greedy(city::City=read_city(); elapsed_street_penalty=0.1, depth=5)
+function solve_graph_greedy(
+    city::City=read_city(); elapsed_street_penalty=0.1, depth=5, n_steps=1
+)
     city_graph = create_input_graph(city)
-    return solve_graph_greedy(city_graph, elapsed_street_penalty, depth)
+    return solve_graph_greedy(city_graph, elapsed_street_penalty, depth, n_steps)
 end
 
-function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth)
+function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth, n_steps)
     city_data = city_meta_graph.data
     city_graph = city_meta_graph.graph
 
@@ -47,14 +49,17 @@ function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth)
 
             # choose the best street to take
             path = find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
-            end_junction, street = first(path)
 
-            # update traversed streets
-            traversed_streets[street.id] += 1
-            remaining_time -= street.duration
+            for j in 1:min(n_steps, length(path))
+                end_junction, street = path[j]
 
-            append!(itinerary, end_junction)
-            current_junction = end_junction
+                # update traversed streets
+                traversed_streets[street.id] += 1
+                remaining_time -= street.duration
+
+                append!(itinerary, end_junction)
+                current_junction = end_junction
+            end
         end
 
         solution[i] = itinerary
@@ -96,7 +101,7 @@ function find_best_street(possible_streets, traversed_streets, elapsed_street_pe
     # This will always be overwritten
     end_point, best_street = first(possible_streets)
     if length(possible_streets) > 1
-        for (n,s) in possible_streets[1:end]
+        for (n, s) in possible_streets[1:end]
             street_value = s.value * elapsed_street_penalty^get(traversed_streets, s.id, 0)
 
             if street_value > max_street_value
@@ -114,11 +119,11 @@ end
 
         get_possible_paths(city_graph, current_junction, remaining_time, depth)
 
-returns list of tuples of (path_value, path) where path is a list of junctions and path_value is the value of the path
+returns list of tuples
 """
 function get_possible_paths(city_graph, current_junction, remaining_time, depth)
     possible_paths = [
-        [i] for i in get_possible_streets(city_graph, current_junction, remaining_time)
+        [i,] for i in get_possible_streets(city_graph, current_junction, remaining_time)
     ]
     final_paths = []
     while length(possible_paths) > 0
