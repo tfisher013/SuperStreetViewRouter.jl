@@ -13,16 +13,6 @@ struct CityData
 end
 
 """
-    CityGraph(data::CityData, graph::ValOutDiGraph)
-
-A graph representation of a City object. The graph is a SimpleValueGraphs.jl ValOutDiGraph, and the data is a CityData object.
-"""
-struct CityGraph
-    data::CityData
-    graph::ValOutDiGraph
-end
-
-"""
 
     StreetData(duration::Int, value::Int, id::Int)
 
@@ -39,6 +29,16 @@ struct StreetData
 
     StreetData(duration::Int, distance::Int, i::Int) = new(duration, distance / duration, i)
     StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i)
+end
+
+"""
+    CityGraph(data::CityData, graph::ValOutDiGraph)
+
+A graph representation of a City object. The graph is a SimpleValueGraphs.jl ValOutDiGraph, and the data is a CityData object.
+"""
+struct CityGraph{T<:SimpleValueGraphs.AbstractValGraph}
+    data::CityData
+    graph::T
 end
 
 """

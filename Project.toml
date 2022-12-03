@@ -18,8 +18,7 @@ SimpleValueGraphs = "0.4.1"
 julia = "1.8"
 
 [extras]
-HashCode2014 = "7bbed249-721d-42ac-b1f6-7cf884be0fbe"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "HashCode2014"]
+test = ["Test"]

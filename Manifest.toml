@@ -2,7 +2,7 @@
 
 julia_version = "1.8.2"
 manifest_format = "2.0"
-project_hash = "d040f4ea93ce1fa31d20e8b1362a37216cff35be"
+project_hash = "5ea46618f76a57ee88811aa9cbe37861212db55f"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -78,8 +78,6 @@ version = "1.7.4"
 [[deps.HashCode2014]]
 deps = ["Artifacts", "PythonCall"]
 git-tree-sha1 = "32e30b11d479dcbc4b52471804621dacd4cc6016"
-repo-rev = "main"
-repo-url = "https://github.com/gdalle/HashCode2014.jl"
 uuid = "7bbed249-721d-42ac-b1f6-7cf884be0fbe"
 version = "0.1.0"
 
