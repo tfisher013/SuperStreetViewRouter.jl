@@ -123,7 +123,7 @@ returns list of tuples
 """
 function get_possible_paths(city_graph, current_junction, remaining_time, depth)
     possible_paths = [
-        [i,] for i in get_possible_streets(city_graph, current_junction, remaining_time)
+        [i] for i in get_possible_streets(city_graph, current_junction, remaining_time)
     ]
     final_paths = []
     while length(possible_paths) > 0
@@ -187,7 +187,6 @@ Returns the best path to traverse from the provided list of possible paths. The 
 function find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
     max_path_value = -1.0
     best_path = first(possible_paths)
-    # Threads.@threads for path in possible_paths
     for path in possible_paths
         path_value = get_path_value(path, traversed_streets, elapsed_street_penalty)
 
