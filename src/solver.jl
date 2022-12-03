@@ -141,10 +141,20 @@ function get_possible_paths(city_graph, current_junction, remaining_time, depth)
     return final_paths
 end
 
+"""
+    path_time(path)
+
+Returns the time it takes to traverse the provided path
+"""
 function path_time(path)
     return sum(s[2].duration for s in path)
 end
 
+"""
+    get_path_value(path, traversed_streets, elapsed_street_penalty)
+
+Returns the value of the provided path, taking into account the number of times each street has been traversed with the provided penalty
+"""
 function get_path_value(path, traversed_streets, elapsed_street_penalty)
     path_value = 0.0
     temp_traversed_streets = DefaultDict(0)
@@ -164,6 +174,11 @@ function get_path_value(path, traversed_streets, elapsed_street_penalty)
     return path_value
 end
 
+"""
+    find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
+
+Returns the best path to traverse from the provided list of possible paths. The best path is the one with the highest value considering the number of times each street has been traversed with the provided penalty
+"""
 function find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
     max_path_value = -1.0
     best_path = first(possible_paths)
