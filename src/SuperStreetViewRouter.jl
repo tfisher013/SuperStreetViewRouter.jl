@@ -1,10 +1,9 @@
 module SuperStreetViewRouter
-using Graphs, SimpleValueGraphs
-
-using HashCode2014
-using Statistics
 
 using DataStructures
+using Graphs, SimpleValueGraphs
+using HashCode2014
+using Statistics
 
 export benchmark_random_walk_solutions
 export get_total_city_cost, get_total_city_length

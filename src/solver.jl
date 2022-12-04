@@ -102,7 +102,9 @@ function find_best_street(possible_streets, traversed_streets, elapsed_street_pe
     end_point, best_street = first(possible_streets)
     if length(possible_streets) > 1
         for (n, s) in possible_streets[1:end]
-            street_value = apply_penalty(street_value, get(traversed_streets, s.id, 0), elapsed_street_penalty)
+            street_value = apply_penalty(
+                street_value, get(traversed_streets, s.id, 0), elapsed_street_penalty
+            )
 
             if street_value > max_street_value
                 best_street = s
@@ -167,10 +169,14 @@ function get_path_value(path, traversed_streets, elapsed_street_penalty)
     for street in last.(path)
         v = street.value
         if street.id in keys(traversed_streets)
-            v = apply_penalty(v, get(traversed_streets, street.id, 0), elapsed_street_penalty)
+            v = apply_penalty(
+                v, get(traversed_streets, street.id, 0), elapsed_street_penalty
+            )
         end
         if street.id in keys(temp_traversed_streets)
-            v = apply_penalty(v, get(temp_traversed_streets, street.id, 0), elapsed_street_penalty)
+            v = apply_penalty(
+                v, get(temp_traversed_streets, street.id, 0), elapsed_street_penalty
+            )
         end
 
         path_value += v
@@ -204,8 +210,8 @@ end
 
 Applies a traversal penalty to a provided value.
 """
-function apply_penalty(pre_penalty_value::Float64, num_traversals::Int64, elapsed_street_penalty::Float64)::Float64
-
-    return pre_penalty_value*elapsed_street_penalty^num_traversals
-
+function apply_penalty(
+    pre_penalty_value::Float64, num_traversals::Int64, elapsed_street_penalty::Float64
+)::Float64
+    return pre_penalty_value * elapsed_street_penalty^num_traversals
 end
