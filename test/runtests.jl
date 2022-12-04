@@ -24,4 +24,21 @@ DocMeta.setdocmeta!(
         solution = solve_graph_greedy()
         @test is_feasible(solution, city)
     end
+
+    # test get_possible_streets()
+    @testset verbose = true "get_possible_streets" begin
+        city = read_city()
+        city_graph = create_input_graph(city).graph
+
+        # we should have no possible streets returned if we provide remaining time = 0
+        @test length(get_possible_streets(city_graph, city.starting_junction, 0)) == 0
+
+        # ensure returned streets have duration ≤ remaining time
+        for i in [10, 25, 50]
+            for possible_street in
+                get_possible_streets(city_graph, city.starting_junction, i)
+                @test possible_street[2].duration ≤ i
+            end
+        end
+    end
 end
