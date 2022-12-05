@@ -90,35 +90,6 @@ end
 
 """
 
-    find_best_street(possible_streets, traversed_streets, elapsed_street_penalty)
-
-Returns the best street to traverse from the provided list of possible streets. The best street is the one with the highest value,
-or the one with the highest value * elapsed_street_penalty ^ times traversed if it has been traversed before.
-"""
-function find_best_street(possible_streets, traversed_streets, elapsed_street_penalty)
-    max_street_value = -1.0
-
-    # This will always be overwritten
-    end_point, best_street = first(possible_streets)
-    if length(possible_streets) > 1
-        for (n, s) in possible_streets[1:end]
-            street_value = apply_penalty(
-                street_value, get(traversed_streets, s.id, 0), elapsed_street_penalty
-            )
-
-            if street_value > max_street_value
-                best_street = s
-                end_point = n
-                max_street_value = street_value
-            end
-        end
-    end
-
-    return (end_point, best_street)
-end
-
-"""
-
         get_possible_paths(city_graph, current_junction, remaining_time, depth)
 
 returns list of tuples
