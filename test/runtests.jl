@@ -41,4 +41,16 @@ DocMeta.setdocmeta!(
             end
         end
     end
+
+    # test get_total_city_cost
+    @testset verbose = true "get_total_city_cost" begin
+        city = read_city()
+        @test get_total_city_cost(city) == 274628
+    end
+
+    # test get_total_city_length
+    @testset verbose = true "get_total_city_length" begin
+        city = read_city()
+        @test get_total_city_length(city) == 1967444
+    end
 end
