@@ -22,14 +22,24 @@ Structure storing the data required for greedy algorithm in edges of city graph.
     StreetData(street::Street, id::Int)
 
 """
-struct StreetData
-    duration::Int # time cost of traversing the street (seconds)
-    value::Float64 # distance/duration -> maximise this
+struct StreetData{D<:Real, V<:Real} <: Real
+    duration::D # time cost of traversing the street (seconds)
+    value::V # distance/duration -> maximise this
     id::Int # index of street in city.streets
-
-    StreetData(duration::Int, distance::Int, i::Int) = new(duration, distance / duration, i)
-    StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i)
 end
+
+StreetData(s::Street, i::Int) = StreetData{Int, Float64}(s.duration, s.distance / s.duration, i)
+StreetData(v::T) where {T<:Real} = StreetData(0, v, 0)
+
+Base.:+(x::StreetData, y::StreetData) = StreetData(x.duration, x.value + y.value, x.id)
+Base.:-(x::StreetData, y::StreetData) = StreetData(x.duration, x.value - y.value, x.id)
+Base.:*(x::StreetData, y::StreetData) = StreetData(x.duration, x.value * y.value, x.id)
+Base.:/(x::StreetData, y::StreetData) = StreetData(x.duration, x.value / y.value, x.id)
+
+Base.:<(x::StreetData, y::StreetData) = x.value < y.value
+Base.:^(x::StreetData, y::StreetData) = StreetData(x.duration, x.value ^ y.value, x.id)
+Base.zero(::Type{StreetData}) = StreetData(0, 0.0, 0)
+Base.typemax(::Type{StreetData}) = StreetData(0, typemax(Float64), 0)
 
 """
     CityGraph(data::CityData, graph::ValOutDiGraph)
