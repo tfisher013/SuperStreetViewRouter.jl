@@ -74,3 +74,20 @@ function create_input_graph(city::City)
 
     return CityGraph(city_data, city_graph)
 end
+
+function create_subgraphs(city_meta_graph, time, edgeLength)
+    # subgraphs = Vector{Tuple{Int64,StreetData}}(undef, 0)
+
+    city_data = city_meta_graph.data
+    city_graph = city_meta_graph.graph
+
+    source = city_data.starting_junction
+    paths = get_possible_streets(city_graph, source, time)
+    target = last(paths)[2].id
+
+    # print(typeof(city_graph))
+    # capacity_matrix = get_capacity_matrix(
+
+    solution = mincut(city_graph)
+    return solution
+end

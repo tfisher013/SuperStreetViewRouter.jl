@@ -110,3 +110,32 @@ function find_best_street(possible_streets, traversed_streets, elapsed_street_pe
 
     return (end_point, best_street)
 end
+
+"""
+        get_possible_paths(city_graph, current_junction, remaining_time, depth)
+returns list of tuples of (path_value, path) where path is a list of junctions and path_value is the value of the path
+"""
+function get_possible_paths(city_graph, current_junction, remaining_time, depth)
+    possible_paths = [
+        [i] for i in get_possible_streets(city_graph, current_junction, remaining_time)
+    ]
+    final_paths = []
+    while length(possible_paths) > 0
+        path = pop!(possible_paths)
+        if length(path) == depth
+            if path_time(path) <= remaining_time
+                push!(final_paths, path)
+            end
+        else
+            new_paths = get_possible_streets(city_graph, first(last(path)), remaining_time)
+            if length(new_paths) == 0
+                push!(final_paths, path)
+            else
+                for p in new_paths
+                    push!(possible_paths, [path..., p])
+                end
+            end
+        end
+    end
+    return final_paths
+end
