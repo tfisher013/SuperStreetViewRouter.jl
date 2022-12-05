@@ -16,9 +16,7 @@ makedocs(;
         edit_link="main",
         assets=String[],
     ),
-    pages=["Home" => "index.md",
-           "Algorithm" => "algorithm.md",
-    ],
+    pages=["Home" => "index.md", "Algorithm" => "algorithm.md"],
 )
 
 deploydocs(; repo="github.com/tfisher013/SuperStreetViewRouter.jl", devbranch="main")
