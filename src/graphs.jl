@@ -31,15 +31,24 @@ struct StreetData
     StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i)
 end
 
-"""
-    CityGraph(data::CityData, graph::ValOutDiGraph)
+Base.:+(x::StreetData, y::StreetData) = StreetData(x.duration + y.duration, x.value + y.value, x.id)
+Base.:-(x::StreetData, y::StreetData) = StreetData(x.duration - y.duration, x.value - y.value, x.id)
+Base.:*(x::StreetData, y::StreetData) = StreetData(x.duration * y.duration, x.value * y.value, x.id)
+Base.:/(x::StreetData, y::StreetData) = StreetData(x.duration / y.duration, x.value / y.value, x.id)
 
-A graph representation of a City object. The graph is a SimpleValueGraphs.jl ValOutDiGraph, and the data is a CityData object.
-"""
-struct CityGraph{T<:SimpleValueGraphs.AbstractValGraph}
-    data::CityData
-    graph::T
-end
+Base.:<(x::StreetData, y::StreetData) = x.value < y.value
+Base.:^(x::StreetData, y::StreetData) = x.value ^ y.value
+
+
+# """
+#     CityGraph(data::CityData, graph::ValOutDiGraph)
+
+# A graph representation of a City object. The graph is a SimpleValueGraphs.jl ValOutDiGraph, and the data is a CityData object.
+# """
+# struct CityGraph{T<:SimpleValueGraphs.AbstractValGraph}
+#     data::CityData
+#     graph::T
+# end
 
 """
 
