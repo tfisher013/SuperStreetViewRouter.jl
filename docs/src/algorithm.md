@@ -49,11 +49,67 @@ All tunable algorithm parameters can be provided when calling `solve_graph_greed
 
 ## Analysis
 
-Todo
+!!!In Progress!!!
+
+The upper bound of the algorithm can be described as the maximum score achievable on a given city data of which we know some 
+information. In this section, a reasonable upper bound will be derived beginning from simple assumptions and gradually accounting
+for increasing complexity.
+
+Let's begin by considering a City object whose streets so exceed the number of cars and total duration that all cars can run freely 
+without fear of overlap. Here we assume that the traversal penalty described above is sufficient to prevent overlap in the presence 
+of an abudance of available streets. With all $\text{num}\textunderscore\text{cars}$ cars running for $\text{total}\textunderscore\text{duration}$ 
+seconds each, there are $\text{num}\textunderscore\text{cars} \cdot \text{total}\textunderscore\text{duration}$ seconds during which 
+streets will be traversed.
+
+To generate a distance score from the available time, we introduce a normalized average rate for the City object as described below:
+
+$$\text{norm}\textunderscore\text{avg}\textunderscore\text{speed} = \frac{\displaystyle \sum_{s \in S} s_d \cdot \frac{s_d}{s_t}}{\displaystyle \sum_{s \in S} s_d}$$
+
+$S$ is the set of streets in the the city
+
+$s_d$ is the distance of street $s \in S$
+
+$s_t$ is the duration of street $s \in S$
+
+Using this value as an approximation for the typical speed at which a car can traverse any given street in the City object, we arrive 
+at a idyllic upper bound $b_{u}$ (measured in meters) of
+
+$$b_{u} \leq \text{num}\textunderscore\text{cars} \cdot \text{total}\textunderscore\text{duration} \cdot \text{norm}\textunderscore\text{avg}\textunderscore\text{speed}$$
+
+Now applying this model to a more general City object requires accounting for two possibilities related to scarcity:
+
+1. Suppose a City object contains less distance in its streets than the value obtained from the expression above?
+2. Suppose cars are forced to overlap one another in the course of their paths?
+
+Handling the first situation is simple. We cap our bound at the total distance of the City object:
+
+$$b_{u} \leq \min(\text{num}\textunderscore\text{cars} \cdot \text{total}\textunderscore\text{duration} \cdot \text{norm}\textunderscore\text{avg}\textunderscore\text{speed}, d_{total})$$
+
+where $d_{total}=\sum_{s \in S} s_d$
+
+To address overlap, consider how its effect ranges from absolute (the score of $n$ cars is equivalent to the score of 
+$1$) to non-existent (ideal model above). Expressed in terms of our quantities,
+
+$$ \min(\text{total}\textunderscore\text{duration} \cdot \text{norm}\textunderscore\text{avg}\textunderscore\text{speed}, 
+d_{total}) \leq b_{u} \leq \min(\text{num}\textunderscore\text{cars} \cdot \text{total}\textunderscore\text{duration} \cdot \text{norm}\textunderscore\text{avg}\textunderscore\text{speed}, d_{total}) $$
+
+To simplify our expression, let's condense the effect of overlap into a single factor, $o_f$, like so:
+
+$$b_{u} \leq \min(\text{num}\textunderscore\text{cars} \cdot \text{total}\textunderscore\text{duration} \cdot \text{norm}\textunderscore\text{avg}\textunderscore\text{speed} \cdot o_f, d_{total})$$
+
+where $\frac{1}{\text{num}\textunderscore\text{cars}} \leq o_f \leq 1$
+
+A simple way to construct $o_f$ is to relate it to the following ratio, which represents what portion of the city $1$ car 
+could traverse on its own:
+
+$$\frac{\text{total}\textunderscore\text{duration} \cdot \text{norm}\textunderscore\text{avg}\textunderscore\text{speed}}{d_{total}}$$
+
+!!!In Progress!!!
 
 ## Areas For Improvement
 
-There are several ideas relating to BFS that could likely improve performance. Performance improvements themselves do not increase score, but allow for increased depth (which may augment score) in a manageable amount of time.
+There are several ideas relating to BFS that could likely improve performance. Performance improvements themselves do not 
+increase score, but allow for increased depth (which may augment score) in a manageable amount of time.
 * Trimming BFS set periodically either by value, randomness, or the similarity between paths.
 * Pre-allocating and considering only a set number of length `depth` paths per BFS routine to decrease runtime memory allocations.
 * Applying threading to each iteration of BFS as next-step paths are generated independently.
