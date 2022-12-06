@@ -9,7 +9,7 @@ using DataStructures
 export benchmark_random_walk_solutions
 export get_total_city_cost, get_total_city_length
 export solve_graph_greedy, create_input_graph
-export create_subgraphs
+export create_subgraphs, practice_subgraph
 
 include("functions.jl")
 include("graphs.jl")

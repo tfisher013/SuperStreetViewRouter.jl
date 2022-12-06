@@ -98,7 +98,21 @@ function create_subgraphs(city::City)
     # paths = get_possible_streets(city_graph, source, time)
     # target = last(paths)[2].id
 
+    print(city_data.starting_junction) #4517
+
+    print(city.streets[1])
+
     capacity_matrix = ValMatrix(city_graph, :l, 0.0)
-    solution = mincut(city_graph, capacity_matrix)
-    return solution
+
+    parity, bestcut = mincut(city_graph, capacity_matrix)
+    return parity
+end
+
+
+function practice_subgraph()
+    g = ValGraph(3, edgeval_types = (a = Int, b = String))
+    add_edge!(g, 1, 2, (a=10, b="abc"))
+    add_edge!(g, 1, 3, (a=20, b="xyz"))
+    capacity_matrix = ValMatrix(g, :a, 0)
+    return mincut(g, capacity_matrix)
 end
