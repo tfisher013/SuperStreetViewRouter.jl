@@ -14,7 +14,7 @@ end
 
 """
 
-    StreetData(duration::Int, value::Int, id::Int)
+    StreetData(duration::Real, value::Real, id::Int)
 
 Structure storing the data required for greedy algorithm in edges of city graph. Has constructors
     
@@ -68,7 +68,7 @@ function create_input_graph(city::City)
         length(city.junctions);
         vertexval_types=(Int64,),
         vertexval_init=v -> (v,),
-        edgeval_types=(StreetData,),
+        edgeval_types=(s = StreetData, l = Float64),
     )
     city_data = CityData(city)
 
@@ -78,28 +78,27 @@ function create_input_graph(city::City)
         sdata = StreetData(s, i)
 
         #* Define edges
-        t = add_edge!(city_graph, A, B, (sdata,))
+        t = add_edge!(city_graph, A, B, (sdata, sdata.value))
         if s.bidirectional
-            t = add_edge!(city_graph, B, A, (sdata,))
+            t = add_edge!(city_graph, B, A, (sdata, sdata.value))
         end
     end
 
     return CityGraph(city_data, city_graph)
 end
 
-function create_subgraphs(city_meta_graph, time, edgeLength)
+function create_subgraphs(city::City)
     # subgraphs = Vector{Tuple{Int64,StreetData}}(undef, 0)
 
+    city_meta_graph = create_input_graph(city)
     city_data = city_meta_graph.data
     city_graph = city_meta_graph.graph
 
-    source = city_data.starting_junction
-    paths = get_possible_streets(city_graph, source, time)
-    target = last(paths)[2].id
+    # source = city_data.starting_junction
+    # paths = get_possible_streets(city_graph, source, time)
+    # target = last(paths)[2].id
 
-    # print(typeof(city_graph))
-    # capacity_matrix = get_capacity_matrix(
-
-    solution = mincut(city_graph)
+    capacity_matrix = ValMatrix(city_graph, :l, 0.0)
+    solution = mincut(city_graph, capacity_matrix)
     return solution
 end
