@@ -70,11 +70,4 @@ DocMeta.setdocmeta!(
         city = read_city()
         @test get_total_city_length(city) == 1967444
     end
-
-    # test find_best_street
-    # @testset verbose = true "find_best_street" begin
-    #     # city = read_city()
-    #     # @test find_best_street(city) == 1967444
-    # end
-
 end
