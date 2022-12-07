@@ -106,18 +106,27 @@ function create_subgraphs(city::City)
     # parity, bestcut = mincut(city_graph)
     karger_parity = karger_min_cut(city_graph)
 
-    subgraph1 = Vector{Int8}()
-    subgraph2 = Vector{Int8}()
-    for p in parity
-        if p == 1
-            append!(subgraph1, p)
-        elseif p == 2
-            append!(subgraph2, p)
+    subgraph1 = city_meta_graph.graph
+    subgraph2 = city_meta_graph.graph
+    for i in 1:length(parity)
+        if parity[i] == 1
+            st = city.streets[i]
+            # println(st)
+            rem_edge!(subgraph2, st.endpointA, st.endpointB)
+        #     append!(subgraph1, city.junctions[i])
+        elseif parity[i] == 2
+            st = city.streets[i]
+            # println(st)
+            rem_edge!(subgraph1, st.endpointA, st.endpointB)
+            # append!(subgraph2, city.junctions[i])
         end
     end
 
+    println(length(city_graph))
     println(length(subgraph1))
     println(length(subgraph2))
+
+
 
     return parity
 end
@@ -126,10 +135,26 @@ function practice_subgraph_matrix()
     g = ValGraph(4, edgeval_types = (a = Int, b = String))
     add_edge!(g, 1, 2, (a=10, b="abc"))
     add_edge!(g, 1, 3, (a=20, b="xyz"))
-    add_edge!(g, 2, 4, (a=10, b="xyz"))
+    add_edge!(g, 1, 4, (a=10, b="xyz"))
     capacity_matrix = ValMatrix(g, :a, 0)
-    print(capacity_matrix)
-    return mincut(g, capacity_matrix)
+    println(capacity_matrix)
+    # println(rem_vertex!(g, 1))
+    parity, bestcut = mincut(g, capacity_matrix)
+    subgraph1 = Vector{Int}()
+    subgraph2 = Vector{Int}()
+    # for i in 1:length(parity)
+    #     if parity[i] == 1
+    #         print(get_vertexval(g, i, :))
+    #     #     append!(subgraph1, city.junctions[i])
+    #     elseif parity[i] == 2
+    #         print(get_vertexval(g, i, :))
+    #         # append!(subgraph2, city.junctions[i])
+    #     end
+    # end
+    println(g)
+    rem_edge!(g, 1, 2)
+    println(g)
+    return subgraph1, subgraph2
 end
 
 function practice_subgraph()
