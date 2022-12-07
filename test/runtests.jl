@@ -42,6 +42,23 @@ DocMeta.setdocmeta!(
         end
     end
 
+    # test get_possible_paths
+    @testset verbose = true "get_possible_paths" begin
+        city = read_city()
+        city_graph = create_input_graph(city).graph
+
+        @test length(get_possible_paths(city_graph, city.starting_junction, 0, 0)) == 0
+
+        for i in [10, 25, 50]
+            for j in [1, 5, 10]
+                for possible_path in
+                    get_possible_paths(city_graph, city.starting_junction, i, j)
+                    @test possible_path[1][2].duration ≤ i
+                end
+            end
+        end
+    end
+
     # test get_total_city_cost
     @testset verbose = true "get_total_city_cost" begin
         city = read_city()
@@ -53,4 +70,11 @@ DocMeta.setdocmeta!(
         city = read_city()
         @test get_total_city_length(city) == 1967444
     end
+
+    # test find_best_street
+    # @testset verbose = true "find_best_street" begin
+    #     # city = read_city()
+    #     # @test find_best_street(city) == 1967444
+    # end
+
 end
