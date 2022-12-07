@@ -68,7 +68,8 @@ function create_input_graph(city::City)
         length(city.junctions);
         vertexval_types=(Int64,),
         vertexval_init=v -> (v,),
-        edgeval_types=(s = StreetData, l = Float64),
+        # edgeval_types=(Float64,),
+        edgeval_types=(s = StreetData, d = Float64),
     )
     city_data = CityData(city)
 
@@ -82,14 +83,16 @@ function create_input_graph(city::City)
         if s.bidirectional
             t = add_edge!(city_graph, B, A, (sdata, sdata.value))
         end
+        # t = add_edge!(city_graph, A, B, (sdata.value,))
+        # if s.bidirectional
+        #     t = add_edge!(city_graph, B, A, (sdata.value,))
+        # end
     end
 
     return CityGraph(city_data, city_graph)
 end
 
 function create_subgraphs(city::City)
-    # subgraphs = Vector{Tuple{Int64,StreetData}}(undef, 0)
-
     city_meta_graph = create_input_graph(city)
     city_data = city_meta_graph.data
     city_graph = city_meta_graph.graph
@@ -98,21 +101,41 @@ function create_subgraphs(city::City)
     # paths = get_possible_streets(city_graph, source, time)
     # target = last(paths)[2].id
 
-    print(city_data.starting_junction) #4517
-
-    print(city.streets[1])
-
-    capacity_matrix = ValMatrix(city_graph, :l, 0.0)
-
+    capacity_matrix = ValMatrix(city_graph, :d, 0.0)
     parity, bestcut = mincut(city_graph, capacity_matrix)
+    # parity, bestcut = mincut(city_graph)
+    karger_parity = karger_min_cut(city_graph)
+
+    subgraph1 = Vector{Int8}()
+    subgraph2 = Vector{Int8}()
+    for p in parity
+        if p == 1
+            append!(subgraph1, p)
+        elseif p == 2
+            append!(subgraph2, p)
+        end
+    end
+
+    println(length(subgraph1))
+    println(length(subgraph2))
+
     return parity
 end
 
-
-function practice_subgraph()
-    g = ValGraph(3, edgeval_types = (a = Int, b = String))
+function practice_subgraph_matrix()
+    g = ValGraph(4, edgeval_types = (a = Int, b = String))
     add_edge!(g, 1, 2, (a=10, b="abc"))
     add_edge!(g, 1, 3, (a=20, b="xyz"))
+    add_edge!(g, 2, 4, (a=10, b="xyz"))
     capacity_matrix = ValMatrix(g, :a, 0)
+    print(capacity_matrix)
     return mincut(g, capacity_matrix)
+end
+
+function practice_subgraph()
+    g = ValGraph(4, edgeval_types=(Int,));
+    add_edge!(g, 1, 2, (10,))
+    add_edge!(g, 1, 3, (20,))
+    add_edge!(g, 2, 4, (10,))
+    return mincut(g)
 end
