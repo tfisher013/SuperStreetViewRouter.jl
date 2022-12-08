@@ -19,6 +19,7 @@ makedocs(;
     pages=[
         "Example Usage" => "example_usage.md",
         "Algorithm" => "algorithm.md",
+        "Upper Bound" => "algorithm_upper_bound.md",
         "API" => "index.md",
     ],
 )
