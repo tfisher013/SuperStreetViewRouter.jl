@@ -26,9 +26,10 @@ struct StreetData
     duration::Int # time cost of traversing the street (seconds)
     value::Float64 # distance/duration -> maximise this
     id::Int # index of street in city.streets
+    distance::Int
 
     # StreetData(duration::Int, distance::Int, i::Int) = new(duration, distance / duration, i)
-    StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i)
+    StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i, s.distance)
 end
 
 """
