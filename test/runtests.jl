@@ -24,8 +24,23 @@ DocMeta.setdocmeta!(
         sol = solve(prob)
         @test check_solution_feasibility(sol, prob)
 
+        data2 = SuperStreetViewRouter.CityData(;
+            total_duration=prob.data.total_duration,
+            nb_cars=prob.data.nb_cars + 1,
+            starting_junction=prob.data.starting_junction,
+        )
         prob = CityProblem(;
-            data=prob.data, graph=prob.graph, nb_cars=prob.data.nb_cars + 1
+            data=data2, graph=prob.graph, penalty_function=prob.penalty_function
+        )
+        @test ~check_solution_feasibility(sol, prob)
+
+        data3 = SuperStreetViewRouter.CityData(;
+            total_duration=prob.data.total_duration,
+            nb_cars=prob.data.nb_cars,
+            starting_junction=prob.data.starting_junction + 1,
+        )
+        prob = CityProblem(;
+            data=data3, graph=prob.graph, penalty_function=prob.penalty_function
         )
         @test ~check_solution_feasibility(sol, prob)
     end

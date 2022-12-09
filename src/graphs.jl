@@ -6,11 +6,18 @@ A struct that holds the metadata for a city. Has constructor(s)
     CityData(c::City)
     CityData(total_duration::Int, nb_cars::Int, starting_junction::Int)
 """
-struct CityData
+Base.@kwdef struct CityData
     total_duration::Int # Total time available for car itineraries (seconds)
     nb_cars::Int # number of cars in the fleed
     starting_junction::Int # Index of junction where all cars initially located
-    CityData(c::City) = new(c.total_duration, c.nb_cars, c.starting_junction)
+end
+
+function CityData(c::City)
+    return CityData(;
+        total_duration=c.total_duration,
+        nb_cars=c.nb_cars,
+        starting_junction=c.starting_junction,
+    )
 end
 
 """
