@@ -47,6 +47,25 @@ All tunable algorithm parameters can be provided when calling `solve_graph_greed
   * `n_steps` is the number of street edges traversed once an optimal path of depth `depth` has been determined. Note that 
   * `n_steps` $\leq$ `depth` as the depth of our BFS limits how many steps forward can be taken per iteration.
 
+## Minimum cut Algorithm
+
+In graph theory, the mincut algorithm "cuts" the graph into two disjoint subsets by minimum sum of weights of at least one edge that's removed from the graph. The algorithm implementation can be found in the `add-subgraph` branch. 
+
+In our implementation in `create_subgraphs()`, we wanted to split the larger city graph into smaller graphs recursively, until there are $N$ subgraphs where $N$ is the number of cars. Each subgraph would have similar `value`, which is $$\frac{distance}{duration}$$. Then, each car will run within each subgraph, maximize the traveled path length in their respective subgraph, and complete at the same time as the other cars. Note that because the optimal path length may only be derived if cars are able to exit their respective subgraph, the cars should be able to traverse outside of their subgraph, albeit with a heavier penalty.
+
+The purpose of mincut is to run the `Depth Searched-Enhanced Greedy BFS` algorithm on smaller graphs, for higher accuracy with lower computational time. 
+
+The steps taken look like the following.
+1. Modify the graphical representation to include `value`.
+2. Given a city graph, generate the 2-dimensional capacity matrix of the distance between each respective junction $j$.
+3. Compute the parity and best cut from either the Graphs.jl mincut algorithm (https://docs.juliahub.com/Graphs/VJ6vx/1.5.0/pathing/#Graphs.mincut) or the Karger mincut algorithm. 
+4. Generate two subgraphs using the returned parity, with one subgraph containing junctions labeled $1$ and the other containing junctions labeled $2$.
+5. With each new subgraph, repeat steps 1-4 until $N$ subgraphs are created, where $N$ is the number of cars. 
+
+We were unfortunately unable to merge the implemented mincut algorithm with the final product due to the nature of the mincut algorithm. For the first split, which should've outputted two subgraphs, the cut seemed incorrect. The first subgraph had 11347 junctions, whereas the second subgraph had 1 junction. We were expecting the numbers to be more balanced. However, on second thought, it is not too surprising that the mincut algorithm selects just one junction in one of the subgraphs. If that vertex only has one neighbor, the cut will only cross that one edge.
+
+In future works, we would still like to pursue the idea of splitting the graph into smaller subgraphs because the idea would offer better accuracy. However, the mincut algorithm seems unlikely to support this endeavour. 
+
 ## Areas For Improvement
 
 There are several ideas relating to BFS that could likely improve performance. Performance improvements themselves do not 
@@ -54,6 +73,5 @@ increase score, but allow for increased depth (which may augment score) in a man
 * Trimming BFS set periodically either by value, randomness, or the similarity between paths.
 * Pre-allocating and considering only a set number of length `depth` paths per BFS routine to decrease runtime memory allocations.
 * Applying threading to each iteration of BFS as next-step paths are generated independently.
-
-
+* Splitting the graph geometrically or graphically with a different algorithm
 
