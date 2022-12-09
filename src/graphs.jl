@@ -4,7 +4,7 @@
 A struct that holds the metadata for a city. Has constructor(s)
 
     CityData(c::City)
-    CityData(total_duration::Int, nb_cars::Int, starting_junction::Int)
+    CityData(;total_duration=Int, nb_cars=Int, starting_junction::Int)
 """
 Base.@kwdef struct CityData
     total_duration::Int # Total time available for car itineraries (seconds)
@@ -30,7 +30,7 @@ Structure storing the data required for greedy algorithm in edges of city graph.
     StreetData(street::Street, id::Int)
 
 """
-struct StreetData
+struct StreetData <: Real
     duration::Int # time cost of traversing the street (seconds)
     id::Int # index of street in city.streets
     distance::Int # distance of the street (meters)
@@ -40,17 +40,16 @@ struct StreetData
 end
 
 function Base.:+(x::StreetData, y::StreetData)
-    return StreetData(x.duration + y.duration, x.value + y.value, x.id)
+    return StreetData(x.duration + y.duration, x.distance + y.distance, x.id)
 end
 function Base.:-(x::StreetData, y::StreetData)
-    return StreetData(x.duration - y.duration, x.value - y.value, x.id)
+    return StreetData(x.duration - y.duration, x.distance - y.distance, x.id)
 end
 function Base.:*(x::StreetData, y::StreetData)
-    return StreetData(x.duration * y.duration, x.value * y.value, x.id)
+    return StreetData(x.duration * y.duration, x.distance * y.distance, x.id)
 end
 function Base.:/(x::StreetData, y::StreetData)
-    return StreetData(x.duration / y.duration, x.value / y.value, x.id)
+    return StreetData(x.duration / y.duration, x.distance / y.distance, x.id)
 end
 
-Base.:<(x::StreetData, y::StreetData) = x.value < y.value
-Base.:^(x::StreetData, y::StreetData) = x.value^y.value
+Base.:<(x::StreetData, y::StreetData) = (x.distance / x.duration) < (y.distance / y.duration)

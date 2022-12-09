@@ -1,6 +1,6 @@
 """
 
-    solve_graph_greedy(city::City=read_city(); elapsed_street_penalty=0.1, depth=5, n_steps=1)
+    solve_graph_greedy(prob::CityProblem; depth=5, n_steps=1)
 
 Generates a greedy solution to the provided city, or uses the default
 city if none is provided. The greedy algorithm can be described as follows:
@@ -11,14 +11,6 @@ city if none is provided. The greedy algorithm can be described as follows:
     to discourage but allow usage. This constant is likely responsive to
     optimization.
 """
-# function solve_graph_greedy(
-#     city::City=read_city(); elapsed_street_penalty=0.1, depth=5, n_steps=1
-# )
-#     city_graph = create_input_graph(city)
-#     return solve_graph_greedy(city_graph, elapsed_street_penalty, depth, n_steps)
-# end
-
-# function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth, n_steps)
 function solve(prob::CityProblem; depth=5, n_steps=1)
     city_data = prob.data
     city_graph = prob.graph
@@ -69,7 +61,7 @@ end
 
 """
 
-    get_possible_streets(city_graph)
+    get_possible_streets(city_graph, current_junction, remaining_time)
 
 Returns a list of all streets that can be traversed from the provided junction.
 The streets are tuples of (end_junction, street_data)
@@ -132,7 +124,7 @@ function path_time(path)
 end
 
 """
-    get_path_value(path, traversed_streets, elapsed_street_penalty)
+    get_path_value(path, traversed_streets, penalty_function)
 
 Returns the value of the provided path, taking into account the number of times each street has been traversed with the provided penalty
 """
@@ -156,7 +148,7 @@ function get_path_value(path, traversed_streets, penalty_function)
 end
 
 """
-    find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
+    find_best_path(possible_paths, traversed_streets, penalty_function)
 
 Returns the best path to traverse from the provided list of possible paths. The best path is the one with the highest value considering the number of times each street has been traversed with the provided penalty
 """
