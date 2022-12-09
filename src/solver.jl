@@ -15,7 +15,7 @@ function solve(prob::CityProblem; depth=5, n_steps=1)
     city_data = prob.data
     city_graph = prob.graph
 
-    solution = Vector{Vector{typeof(city_data.nb_cars)}}(undef, city_data.nb_cars)
+    solution = Vector{Vector{Int}}(undef, city_data.nb_cars)
 
     T_id = typeof(first(first(first(prob.graph.edgevals))).id)
     traversed_streets = DefaultDict{T_id,Int}(0)
