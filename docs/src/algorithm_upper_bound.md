@@ -50,7 +50,7 @@ where $\frac{1}{n_{cars}} \leq o_f \leq 1$
 
 A simple way to construct $o_f$ is to use some version of a sign-like function which varies between $\frac{1}{n_{cars}}$ and $1$ in value. $\tanh(x)$ does the trick, and shifted and scaled between our values it becomes
 
-$$o_f=\frac{1}{2} \cdot \left(1-\frac{1}{n_{cars}} \right) \tanh(x) + \frac{1}{2} \cdot \left( 1 + \frac{1}{n_{cars}} \right) \$$
+$$o_f=\frac{1}{2} \cdot \left(1-\frac{1}{n_{cars}} \right) \tanh(x) + \frac{1}{2} \cdot \left( 1 + \frac{1}{n_{cars}} \right)$$
 
 The input variable to the $\tanh$ function must be a measure of the amount of overlap we expect in a city of fixed size. To represent this, we introduce the quantity $cars_{supported} = \frac{d_{total}}{t_{total} \cdot speed_{avg}}$. This normalized difference between the number of cars the
 city can support and the number of cars in the input file, scaled by the number of cars, is what we use in our overlap factor value:
