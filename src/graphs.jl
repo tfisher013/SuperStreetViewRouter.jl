@@ -92,6 +92,13 @@ function create_input_graph(city::City)
     return CityGraph(city_data, city_graph)
 end
 
+"""
+
+    create_subgraphs(city::City)
+
+Returns an array representing the provided City object split into two subgraphs via the mincut algorithm, where 1 represents the 
+junctions in the first subgraph, and 2 represents the junctions in the second subgraph, in order. 
+"""
 function create_subgraphs(city::City)
     city_meta_graph = create_input_graph(city)
     city_data = city_meta_graph.data
@@ -103,7 +110,6 @@ function create_subgraphs(city::City)
 
     capacity_matrix = ValMatrix(city_graph, :d, 0.0)
     parity, bestcut = mincut(city_graph, capacity_matrix)
-    # parity, bestcut = mincut(city_graph)
     karger_parity = karger_min_cut(city_graph)
 
     subgraph1 = city_meta_graph.graph
@@ -111,56 +117,36 @@ function create_subgraphs(city::City)
     for i in 1:length(parity)
         if parity[i] == 1
             st = city.streets[i]
-            # println(st)
             rem_edge!(subgraph2, st.endpointA, st.endpointB)
-        #     append!(subgraph1, city.junctions[i])
         elseif parity[i] == 2
             st = city.streets[i]
-            # println(st)
             rem_edge!(subgraph1, st.endpointA, st.endpointB)
-            # append!(subgraph2, city.junctions[i])
         end
     end
-
-    println(length(city_graph))
-    println(length(subgraph1))
-    println(length(subgraph2))
-
-
-
     return parity
 end
 
-function practice_subgraph_matrix()
+"""
+
+    practice_subgraph(city::City)
+
+Returns two respective subgraphs for a generated practice graph.
+"""
+function practice_subgraph()
     g = ValGraph(4, edgeval_types = (a = Int, b = String))
     add_edge!(g, 1, 2, (a=10, b="abc"))
     add_edge!(g, 1, 3, (a=20, b="xyz"))
     add_edge!(g, 1, 4, (a=10, b="xyz"))
     capacity_matrix = ValMatrix(g, :a, 0)
-    println(capacity_matrix)
-    # println(rem_vertex!(g, 1))
     parity, bestcut = mincut(g, capacity_matrix)
     subgraph1 = Vector{Int}()
     subgraph2 = Vector{Int}()
-    # for i in 1:length(parity)
-    #     if parity[i] == 1
-    #         print(get_vertexval(g, i, :))
-    #     #     append!(subgraph1, city.junctions[i])
-    #     elseif parity[i] == 2
-    #         print(get_vertexval(g, i, :))
-    #         # append!(subgraph2, city.junctions[i])
-    #     end
-    # end
-    println(g)
-    rem_edge!(g, 1, 2)
-    println(g)
+    for i in 1:length(parity)
+        if parity[i] == 1
+            append!(subgraph1, vertices(g)[i])
+        elseif parity[i] == 2
+            append!(subgraph2, vertices(g)[i])
+        end
+    end
     return subgraph1, subgraph2
-end
-
-function practice_subgraph()
-    g = ValGraph(4, edgeval_types=(Int,));
-    add_edge!(g, 1, 2, (10,))
-    add_edge!(g, 1, 3, (20,))
-    add_edge!(g, 2, 4, (10,))
-    return mincut(g)
 end
