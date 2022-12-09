@@ -51,9 +51,13 @@ All tunable algorithm parameters can be provided when calling `solve_graph_greed
 
 In graph theory, the mincut algorithm "cuts" the graph into two disjoint subsets by minimum sum of weights of at least one edge that's removed from the graph. The algorithm implementation can be found in the `add-subgraph` branch. 
 
-In our implementation in `create_subgraphs()`, we wanted to split the larger city graph into smaller graphs recursively, until there are $N$ subgraphs where $N$ is the number of cars. Each subgraph would have similar `value`, which is $$\frac{distance}{duration}$$. Then, each car will run within each subgraph, maximize the traveled path length in their respective subgraph, and complete at the same time as the other cars. Note that because the optimal path length may only be derived if cars are able to exit their respective subgraph, the cars should be able to traverse outside of their subgraph, albeit with a heavier penalty.
+The purpose of mincut in this project is to be able to run the `Depth Searched-Enhanced Greedy BFS` algorithm on smaller graphs, for higher accuracy with lower computational time. 
 
-The purpose of mincut is to run the `Depth Searched-Enhanced Greedy BFS` algorithm on smaller graphs, for higher accuracy with lower computational time. 
+In our implementation in `create_subgraphs()`, we wanted to split the larger city graph into smaller graphs recursively, until there are $N$ subgraphs where $N$ is the number of cars. 
+
+Each subgraph would thus have similar `value`, which is $$\frac{distance}{duration}$$. 
+
+Then, each car will run within each subgraph, maximize the traveled path length in their respective subgraph, and complete at the same time as the other cars. Note that because the optimal path length may only be derived if cars are able to exit their respective subgraph, the cars should be able to traverse outside of their subgraph, albeit with a heavier penalty.
 
 The steps taken look like the following.
 1. Modify the graphical representation to include `value`.
