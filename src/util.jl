@@ -86,8 +86,8 @@ function check_solution_feasibility(
 end
 
 """
-    get_solution_distance(solution, city_meta_graph)
-    
+    get_solution_distance(solution::Solution, city_meta_graph::CityGraph)
+
 Compute the total distance of all itineraries in `solution` based on the street data from `city`.
 Streets visited several times are only counted once.
 """
@@ -98,25 +98,19 @@ function get_solution_distance(solution::Solution, meta_city_graph::CityGraph)
     # holds the street id's of visited streets
     visited_streets::Vector{Int64} = []
 
-    for edge in edges(city_graph)
-        if get_edgeval(city_graph, src(edge), dst(edge), 1).id ∉ visited_streets
-            visited = false
-            for itinerary in solution.itineraries
-                for v in 1:(length(itinerary) - 1)
-                    i, j = itinerary[v], itinerary[v + 1]
-                    if has_edge(city_graph, i, j)
-                        total_distance += get_edgeval(city_graph, i, j, 1).distance
-                        push!(visited_streets, get_edgeval(city_graph, i, j, 1).id)
-                        visited = true
-                        break
-                    end
+    for itinerary in solution.itineraries
+        for v in 1:(length(itinerary) - 1)
+            i, j = itinerary[v], itinerary[v + 1]
+            if has_edge(city_graph, i, j)
+                if get_edgeval(city_graph, i, j, 1).id ∉ visited_streets
+                    total_distance += get_edgeval(city_graph, i, j, 1).distance
+                    push!(visited_streets, get_edgeval(city_graph, i, j, 1).id)
                 end
-                if visited
-                    break
-                end
+            else
+                @warn "Invalid edge $i --> $j in itinerary"
+                return NaN
             end
         end
     end
-
     return total_distance
 end

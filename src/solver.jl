@@ -1,6 +1,6 @@
 """
 
-    solve_graph_greedy(city::City=read_city())
+    solve_graph_greedy(city::City=read_city(); elapsed_street_penalty=0.1, depth=5, n_steps=1)
 
 Generates a greedy solution to the provided city, or uses the default
 city if none is provided. The greedy algorithm can be described as follows:
@@ -10,10 +10,6 @@ city if none is provided. The greedy algorithm can be described as follows:
     - Traversed streets will have their length decreased by a constant factor
     to discourage but allow usage. This constant is likely responsive to
     optimization.
-
-Inefficient due to only routing a single path at a time. Implementing a
-shared list of traversed streets and dedicating a separate thread to each path
-would likely improve performance.
 """
 function solve_graph_greedy(
     city::City=read_city(); elapsed_street_penalty=0.1, depth=5, n_steps=1
@@ -138,7 +134,7 @@ function get_path_value(path, traversed_streets, elapsed_street_penalty)
     temp_traversed_streets = DefaultDict(0)
 
     for street in last.(path)
-        v = street.value
+        v = street.distance / street.duration
         if street.id in keys(traversed_streets)
             v = apply_penalty(
                 v, get(traversed_streets, street.id, 0), elapsed_street_penalty

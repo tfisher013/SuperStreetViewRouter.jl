@@ -4,6 +4,7 @@
 A struct that holds the metadata for a city. Has constructor(s)
 
     CityData(c::City)
+    CityData(total_duration::Int, nb_cars::Int, starting_junction::Int)
 """
 struct CityData
     total_duration::Int # Total time available for car itineraries (seconds)
@@ -14,7 +15,7 @@ end
 
 """
 
-    StreetData(duration::Int, value::Int, id::Int)
+    StreetData(duration::Int, id::Int, distance::Int)
 
 Structure storing the data required for greedy algorithm in edges of city graph. Has constructors
     
@@ -24,12 +25,11 @@ Structure storing the data required for greedy algorithm in edges of city graph.
 """
 struct StreetData
     duration::Int # time cost of traversing the street (seconds)
-    value::Float64 # distance/duration -> maximise this
     id::Int # index of street in city.streets
-    distance::Int
+    distance::Int # distance of the street (meters)
 
-    # StreetData(duration::Int, distance::Int, i::Int) = new(duration, distance / duration, i)
-    StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i, s.distance)
+    StreetData(duration::Int, distance::Int, i::Int) = new(duration, i, distance)
+    StreetData(s::Street, i::Int) = new(s.duration, i, s.distance)
 end
 
 """
@@ -46,9 +46,8 @@ end
 
     create_input_graph(city::City)
 
-Returns a SimpleWeightedDiGraph representing the provided City object in a directed graph. 
-Graph vertices are Junction indices (as stored in the City object) and edges are weighted by
-street lengths.
+Returns a `CityGraph` which contains a `CityData` object with key city information and a `SimpleValueGraphs`
+which contains juction and street relations.
 """
 function create_input_graph(city::City)
     # Each node only stores outgoing edges -> heavily reduced memory
