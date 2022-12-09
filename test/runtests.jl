@@ -24,8 +24,9 @@ DocMeta.setdocmeta!(
         sol = solve(prob)
         @test check_solution_feasibility(sol, prob)
 
-        prob.data.nb_cars += 1
-        prob = CityProblem(; data=prob.data, graph=prob.graph, nb_cars=prob.nb_cars + 1)
+        prob = CityProblem(;
+            data=prob.data, graph=prob.graph, nb_cars=prob.data.nb_cars + 1
+        )
         @test ~check_solution_feasibility(sol, prob)
     end
     @testset verbose = true "Solution Distance" begin
@@ -50,24 +51,23 @@ DocMeta.setdocmeta!(
         end
     end
 
-    # # test get_possible_paths
-    # @testset verbose = true "get_possible_paths" begin
-    #     prob = CityProblem
-    #     city_graph = create_input_graph(city).graph
+    # test get_possible_paths
+    @testset verbose = true "get_possible_paths" begin
+        prob = CityProblem()
 
-    #     @test length(get_possible_paths(city_graph, city.starting_junction, 0, 0)) == 0
+        @test length(get_possible_paths(prob.graph, prob.data.starting_junction, 0, 0)) == 0
 
-    #     for i in [10, 25, 50]
-    #         for j in [1, 5, 10]
-    #             for possible_path in
-    #                 get_possible_paths(city_graph, city.starting_junction, i, j)
-    #                 @test possible_path[1][2].duration ≤ i
-    #             end
-    #         end
-    #     end
-    # end
+        for i in [10, 25, 50]
+            for j in [1, 5, 10]
+                for possible_path in
+                    get_possible_paths(prob.graph, prob.data.starting_junction, i, j)
+                    @test possible_path[1][2].duration ≤ i
+                end
+            end
+        end
+    end
 
-    # # test get_total_city_cost
+    # test get_total_city_cost
     # @testset verbose = true "get_total_city_cost" begin
     #     city = read_city()
     #     @test get_total_city_cost(city) == 274628
