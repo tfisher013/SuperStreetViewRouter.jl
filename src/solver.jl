@@ -92,7 +92,9 @@ function get_possible_paths(city_graph, current_junction, remaining_time, depth)
     possible_paths = [
         [i] for i in get_possible_streets(city_graph, current_junction, remaining_time)
     ]
-    final_paths = []
+
+    #! Path should be a list of junctions
+    final_paths = Vector{Vector{Tuple{Int64,StreetData}}}([])
     while length(possible_paths) > 0
         path = pop!(possible_paths)
         if length(path) == depth
