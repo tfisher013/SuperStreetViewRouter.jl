@@ -20,9 +20,12 @@ DocMeta.setdocmeta!(
         doctest(SuperStreetViewRouter)
     end
     @testset verbose = true "Solution feasibility" begin
-        city = read_city()
-        solution = solve_graph_greedy()
-        @test is_feasible(solution, city)
+        solution = solve_graph_greedy(read_city())
+        @test check_solution_feasibility(solution, create_input_graph(read_city()))
+    end
+    @testset verbose = true "Solution Distance" begin
+        solution = solve_graph_greedy(read_city())
+        @test get_solution_distance(solution, create_input_graph(read_city())) == 1767554
     end
 
     # test get_possible_streets()
