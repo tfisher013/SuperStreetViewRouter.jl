@@ -17,8 +17,7 @@ function solve(prob::CityProblem; depth=5, n_steps=1)
 
     solution = Vector{Vector{Int}}(undef, city_data.nb_cars)
 
-    T_id = typeof(first(first(first(prob.graph.edgevals))).id)
-    traversed_streets = DefaultDict{T_id,Int}(0)
+    traversed_streets = DefaultDict{Int,Int}(0)
 
     for i in 1:(city_data.nb_cars)
         remaining_time = city_data.total_duration
