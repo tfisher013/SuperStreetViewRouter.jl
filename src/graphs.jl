@@ -32,14 +32,21 @@ struct StreetData
     StreetData(s::Street, i::Int) = new(s.duration, s.distance / s.duration, i, s.distance)
 end
 
-Base.:+(x::StreetData, y::StreetData) = StreetData(x.duration + y.duration, x.value + y.value, x.id)
-Base.:-(x::StreetData, y::StreetData) = StreetData(x.duration - y.duration, x.value - y.value, x.id)
-Base.:*(x::StreetData, y::StreetData) = StreetData(x.duration * y.duration, x.value * y.value, x.id)
-Base.:/(x::StreetData, y::StreetData) = StreetData(x.duration / y.duration, x.value / y.value, x.id)
+function Base.:+(x::StreetData, y::StreetData)
+    return StreetData(x.duration + y.duration, x.value + y.value, x.id)
+end
+function Base.:-(x::StreetData, y::StreetData)
+    return StreetData(x.duration - y.duration, x.value - y.value, x.id)
+end
+function Base.:*(x::StreetData, y::StreetData)
+    return StreetData(x.duration * y.duration, x.value * y.value, x.id)
+end
+function Base.:/(x::StreetData, y::StreetData)
+    return StreetData(x.duration / y.duration, x.value / y.value, x.id)
+end
 
 Base.:<(x::StreetData, y::StreetData) = x.value < y.value
-Base.:^(x::StreetData, y::StreetData) = x.value ^ y.value
-
+Base.:^(x::StreetData, y::StreetData) = x.value^y.value
 
 # """
 #     CityGraph(data::CityData, graph::ValOutDiGraph)
@@ -51,36 +58,36 @@ Base.:^(x::StreetData, y::StreetData) = x.value ^ y.value
 #     graph::T
 # end
 
-"""
+# """
 
-    create_input_graph(city::City)
+#     create_input_graph(city::City)
 
-Returns a SimpleWeightedDiGraph representing the provided City object in a directed graph. 
-Graph vertices are Junction indices (as stored in the City object) and edges are weighted by
-street lengths.
-"""
-function create_input_graph(city::City)
-    # Each node only stores outgoing edges -> heavily reduced memory
-    # but DO NOT access incoming edges
-    city_graph = ValOutDiGraph(
-        length(city.junctions);
-        vertexval_types=(Int64,),
-        vertexval_init=v -> (v,),
-        edgeval_types=(StreetData,),
-    )
-    city_data = CityData(city)
+# Returns a SimpleWeightedDiGraph representing the provided City object in a directed graph. 
+# Graph vertices are Junction indices (as stored in the City object) and edges are weighted by
+# street lengths.
+# """
+# function create_input_graph(city::City)
+#     # Each node only stores outgoing edges -> heavily reduced memory
+#     # but DO NOT access incoming edges
+#     city_graph = ValOutDiGraph(
+#         length(city.junctions);
+#         vertexval_types=(Int64,),
+#         vertexval_init=v -> (v,),
+#         edgeval_types=(StreetData,),
+#     )
+#     city_data = CityData(city)
 
-    for (i, s) in enumerate(city.streets)
-        A = s.endpointA
-        B = s.endpointB
-        sdata = StreetData(s, i)
+#     for (i, s) in enumerate(city.streets)
+#         A = s.endpointA
+#         B = s.endpointB
+#         sdata = StreetData(s, i)
 
-        #* Define edges
-        t = add_edge!(city_graph, A, B, (sdata,))
-        if s.bidirectional
-            t = add_edge!(city_graph, B, A, (sdata,))
-        end
-    end
+#         #* Define edges
+#         t = add_edge!(city_graph, A, B, (sdata,))
+#         if s.bidirectional
+#             t = add_edge!(city_graph, B, A, (sdata,))
+#         end
+#     end
 
-    return CityGraph(city_data, city_graph)
-end
+#     return CityGraph(city_data, city_graph)
+# end

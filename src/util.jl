@@ -95,7 +95,6 @@ Streets visited several times are only counted once.
 """
 function get_solution_distance(solution::Solution, city_problem::CityProblem)
     total_distance::Int64 = 0
-    # city_graph = meta_city_graph.graph
     city_graph = city_problem.graph
 
     # holds the street id's of visited streets

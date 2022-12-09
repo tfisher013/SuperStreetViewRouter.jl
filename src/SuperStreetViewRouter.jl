@@ -13,8 +13,6 @@ export check_solution_feasibility,
     find_best_path,
     get_total_city_cost,
     get_total_city_length
-    # solve_graph_greedy
-export create_input_graph
 
 include("graphs.jl")
 include("penalty.jl")
