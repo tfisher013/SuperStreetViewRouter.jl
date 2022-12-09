@@ -30,7 +30,7 @@ Structure storing the data required for greedy algorithm in edges of city graph.
     StreetData(street::Street, id::Int)
 
 """
-struct StreetData <: Real
+struct StreetData
     duration::Int # time cost of traversing the street (seconds)
     id::Int # index of street in city.streets
     distance::Int # distance of the street (meters)
@@ -38,18 +38,3 @@ struct StreetData <: Real
     StreetData(duration::Int, distance::Int, i::Int) = new(duration, i, distance)
     StreetData(s::Street, i::Int) = new(s.duration, i, s.distance)
 end
-
-function Base.:+(x::StreetData, y::StreetData)
-    return StreetData(x.duration + y.duration, x.distance + y.distance, x.id)
-end
-function Base.:-(x::StreetData, y::StreetData)
-    return StreetData(x.duration - y.duration, x.distance - y.distance, x.id)
-end
-function Base.:*(x::StreetData, y::StreetData)
-    return StreetData(x.duration * y.duration, x.distance * y.distance, x.id)
-end
-function Base.:/(x::StreetData, y::StreetData)
-    return StreetData(x.duration / y.duration, x.distance / y.distance, x.id)
-end
-
-Base.:<(x::StreetData, y::StreetData) = (x.distance / x.duration) < (y.distance / y.duration)
