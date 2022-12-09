@@ -11,19 +11,22 @@ city if none is provided. The greedy algorithm can be described as follows:
     to discourage but allow usage. This constant is likely responsive to
     optimization.
 """
-function solve_graph_greedy(
-    city::City=read_city(); elapsed_street_penalty=0.1, depth=5, n_steps=1
-)
-    city_graph = create_input_graph(city)
-    return solve_graph_greedy(city_graph, elapsed_street_penalty, depth, n_steps)
-end
+# function solve_graph_greedy(
+#     city::City=read_city(); elapsed_street_penalty=0.1, depth=5, n_steps=1
+# )
+#     city_graph = create_input_graph(city)
+#     return solve_graph_greedy(city_graph, elapsed_street_penalty, depth, n_steps)
+# end
 
-function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth, n_steps)
-    city_data = city_meta_graph.data
-    city_graph = city_meta_graph.graph
+# function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth, n_steps)
+function solve(prob::CityProblem; depth=5, n_steps=1)
+    city_data = prob.data
+    city_graph = prob.graph
 
-    solution = Vector{Vector{Int}}(undef, city_data.nb_cars)
-    traversed_streets = DefaultDict{Int,Int}(0)
+    solution = Vector{Vector{typeof(city_data.nb_cars)}}(undef, city_data.nb_cars)
+
+    T_id = typeof(first(first(first(prob.graph.edgevals))).id)
+    traversed_streets = DefaultDict{T_id,Int}(0)
 
     for i in 1:(city_data.nb_cars)
         remaining_time = city_data.total_duration
@@ -44,7 +47,7 @@ function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth, n_st
             end
 
             # choose the best street to take
-            path = find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
+            path = find_best_path(possible_paths, traversed_streets, prob.penalty_function)
 
             for j in 1:min(n_steps, length(path))
                 end_junction, street = path[j]
@@ -72,14 +75,18 @@ Returns a list of all streets that can be traversed from the provided junction.
 The streets are tuples of (end_junction, street_data)
 """
 function get_possible_streets(city_graph, current_junction, remaining_time)
-    possible_streets = Vector{Tuple{Int64,StreetData}}(undef, 0)
+    n_neighbors = length(outneighbors(city_graph, current_junction))
+    possible_streets = Vector{Tuple{Int64,StreetData}}(undef, n_neighbors)
 
+    i = 1
     for n in outneighbors(city_graph, current_junction)
         s = get_edgeval(city_graph, current_junction, n, 1)
         if remaining_time - s.duration >= 0.0
-            push!(possible_streets, (n, s))
+            possible_streets[i] = (n, s)
+            i += 1
         end
     end
+    deleteat!(possible_streets, i:n_neighbors)
 
     return possible_streets
 end
@@ -129,21 +136,17 @@ end
 
 Returns the value of the provided path, taking into account the number of times each street has been traversed with the provided penalty
 """
-function get_path_value(path, traversed_streets, elapsed_street_penalty)
+function get_path_value(path, traversed_streets, penalty_function)
     path_value = 0.0
-    temp_traversed_streets = DefaultDict(0)
+    temp_traversed_streets = DefaultDict{Int,Int}(0)
 
     for street in last.(path)
         v = street.distance / street.duration
         if street.id in keys(traversed_streets)
-            v = apply_penalty(
-                v, get(traversed_streets, street.id, 0), elapsed_street_penalty
-            )
+            v = apply_penalty(v, traversed_streets[street.id], penalty_function)
         end
         if street.id in keys(temp_traversed_streets)
-            v = apply_penalty(
-                v, get(temp_traversed_streets, street.id, 0), elapsed_street_penalty
-            )
+            v = apply_penalty(v, temp_traversed_streets[street.id], penalty_function)
         end
 
         path_value += v
@@ -157,11 +160,11 @@ end
 
 Returns the best path to traverse from the provided list of possible paths. The best path is the one with the highest value considering the number of times each street has been traversed with the provided penalty
 """
-function find_best_path(possible_paths, traversed_streets, elapsed_street_penalty)
+function find_best_path(possible_paths, traversed_streets, penalty_function)
     max_path_value = -1.0
     best_path = first(possible_paths)
     for path in possible_paths
-        path_value = get_path_value(path, traversed_streets, elapsed_street_penalty)
+        path_value = get_path_value(path, traversed_streets, penalty_function)
 
         if path_value > max_path_value
             best_path = path
@@ -169,16 +172,4 @@ function find_best_path(possible_paths, traversed_streets, elapsed_street_penalt
         end
     end
     return best_path
-end
-
-"""
-
-    apply_penalty(pre_penalty_value::Float64, num_traversals::Int64, elapsed_street_penalty::Float64)::Float64
-
-Applies a traversal penalty to a provided value.
-"""
-function apply_penalty(
-    pre_penalty_value::Float64, num_traversals::Int64, elapsed_street_penalty::Float64
-)::Float64
-    return pre_penalty_value * elapsed_street_penalty^num_traversals
 end

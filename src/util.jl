@@ -43,12 +43,14 @@ Check if `soln` satisfies the constraints for the instance defined by `city_meta
 Credit to HashCode2014 for such a clear docstring
 """
 function check_solution_feasibility(
-    soln::Solution, city_meta_graph::CityGraph; verbose=false
+    soln::Solution, city_problem::CityProblem; verbose=false
 )::Bool
 
     # extract CityData and CityGraph objects
-    city_data = city_meta_graph.data
-    city_graph = city_meta_graph.graph
+    # city_data = city_meta_graph.data
+    # city_graph = city_meta_graph.graph
+    city_graph = city_problem.graph
+    city_data = city_problem.data
 
     # check that the correct number of itineraries are present in the solution
     nb_cars = length(soln.itineraries)
@@ -91,9 +93,9 @@ end
 Compute the total distance of all itineraries in `solution` based on the street data from `city`.
 Streets visited several times are only counted once.
 """
-function get_solution_distance(solution::Solution, meta_city_graph::CityGraph)
+function get_solution_distance(solution::Solution, city_problem::CityProblem)
     total_distance::Int64 = 0
-    city_graph = meta_city_graph.graph
+    city_graph = city_problem.graph
 
     # holds the street id's of visited streets
     visited_streets::Vector{Int64} = []
