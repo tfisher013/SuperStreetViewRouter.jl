@@ -71,4 +71,4 @@ Since we have a well defined upper bound for any solution from `SuperStreetViewR
 
 ### Score vs. Upper Bound Across Durations
 
-![Score vs. upper bound across varying durations](https://github.com/tfisher013/SuperStreetViewRouter.jl/blob/main/docs/src/images/duration_plot.png)
+![Score vs. upper bound across varying durations](../images/duration_plot.png)
