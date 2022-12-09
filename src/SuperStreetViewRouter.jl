@@ -5,7 +5,8 @@ using Graphs, SimpleValueGraphs
 using HashCode2014
 using Statistics
 
-export get_possible_streets,
+export check_solution_feasibility 
+    get_possible_streets,
     get_possible_paths,
     find_best_path,
     get_total_city_cost,
