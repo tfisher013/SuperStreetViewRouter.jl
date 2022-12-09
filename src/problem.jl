@@ -15,7 +15,6 @@ function create_city_graph(city)
         vertexval_init=v -> (v,),
         edgeval_types=(StreetData,),
     )
-    city_data = CityData(city)
 
     for (i, s) in enumerate(city.streets)
         A = s.endpointA
