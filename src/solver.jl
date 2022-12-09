@@ -23,7 +23,7 @@ would likely improve performance.
 # end
 
 # function solve_graph_greedy(city_meta_graph, elapsed_street_penalty, depth, n_steps)
-function solve(prob::CityProblem)
+function solve(prob::CityProblem; depth=5, n_steps=1)
     city_data = prob.data
     city_graph = prob.graph
 
@@ -42,7 +42,7 @@ function solve(prob::CityProblem)
         while remaining_time > 0.0
             # identify all valid paths available to traverse
             possible_paths = get_possible_paths(
-                city_graph, current_junction, remaining_time, prob.depth
+                city_graph, current_junction, remaining_time, depth
             )
 
             # this could happen if we can't traverse any outgoing street with our remaining time
@@ -53,7 +53,7 @@ function solve(prob::CityProblem)
             # choose the best street to take
             path = find_best_path(possible_paths, traversed_streets, prob.penalty_function)
 
-            for j in 1:min(prob.n_steps, length(path))
+            for j in 1:min(n_steps, length(path))
                 end_junction, street = path[j]
 
                 # update traversed streets
@@ -80,8 +80,7 @@ The streets are tuples of (end_junction, street_data)
 """
 function get_possible_streets(city_graph, current_junction, remaining_time)
     n_neighbors = length(outneighbors(city_graph, current_junction))
-    # possible_streets = Vector{Tuple{Int64,StreetData}}(undef, n_neighbors)
-    possible_streets = Vector{SVector{Int64,StreetData}}(undef, n_neighbors)
+    possible_streets = Vector{Tuple{Int64,StreetData}}(undef, n_neighbors)
 
     i = 1
     for n in outneighbors(city_graph, current_junction)

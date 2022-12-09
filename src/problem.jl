@@ -1,18 +1,11 @@
-struct CityProblem{
-    G<:SimpleValueGraphs.AbstractValGraph,P<:AbstractPenaltyFunction,D<:Real,N<:Real
-}
+struct CityProblem{G<:SimpleValueGraphs.AbstractValGraph,P<:AbstractPenaltyFunction}
     data::CityData
     graph::G
     penalty_function::P
-    depth::D
-    n_steps::N
 end
 
 function CityProblem(
-    city::City=read_city();
-    penalty_function::AbstractPenaltyFunction=ExponentialPenalty(),
-    depth::Real=5,
-    n_steps::Real=1,
+    city::City=read_city(); penalty_function::AbstractPenaltyFunction=ExponentialPenalty()
 )
     city_graph = ValOutDiGraph(
         length(city.junctions);
@@ -34,5 +27,5 @@ function CityProblem(
         end
     end
 
-    return CityProblem(city_data, city_graph, penalty_function, depth, n_steps)
+    return CityProblem(city_data, city_graph, penalty_function)
 end
