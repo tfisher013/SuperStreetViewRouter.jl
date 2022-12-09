@@ -67,7 +67,7 @@ Since we have a well defined upper bound for any solution from `SuperStreetViewR
 
 ### Score vs. Upper Bound Across Cars
 
-![Score vs. upper bound across varying cars](https://github.com/tfisher013/SuperStreetViewRouter.jl/blob/main/docs/src/images/car_plot.png)
+![Score vs. upper bound across varying cars](../images/car_plot.png)
 
 ### Score vs. Upper Bound Across Durations
 
