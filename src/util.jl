@@ -86,7 +86,7 @@ function check_solution_feasibility(
 end
 
 """
-    get_solution_distance(solution, city_meta_graph)
+    get_solution_distance(solution::Solution, city_meta_graph::CityGraph)
 
 Compute the total distance of all itineraries in `solution` based on the street data from `city`.
 Streets visited several times are only counted once.
