@@ -2,8 +2,7 @@
 
 ## City Data
 
-The `SuperStreetViewRouter.jl` solver accepts a [City object](https://gdalle.github.io/HashCode2014.jl/dev/api/#HashCode2014.City)
-which can be generated using the `HashCode2014.jl` dependency or read in from a local file. 
+The `SuperStreetViewRouter.jl` solver accepts a `CityProblem` object which in turn is built from a [`City` object](https://gdalle.github.io/HashCode2014.jl/dev/api/#HashCode2014.City). The `City` object can be read in from a default online file or from a local file.
 
 ```julia
 using HashCode2014
@@ -13,6 +12,9 @@ julia> city = read_city()
 
 # using local city data file
 julia> city = read_city("path/to/city/file.txt")
+
+# create CityProblem object
+julia> city_problem = CityProblem(city, ExponentialPenaltyFunction())
 ```
 
 ## Generating Solution
@@ -23,25 +25,22 @@ describing an optimal itinerary for the provided City object.
 ```julia
 using HashCode2014, SuperStreetViewRouter
 
-# generate solution using default city object and parameters
-julia> solution = solve_graph_greedy()
-
-# generate solution with custom city object and parameters
-julia> solution = solve_graph_greedy(city; elapsed_street_penalty=0.25, depth=6, n_steps=3)
+# generate solution using CityProblem object and parameters
+julia> solution = solve(city_problem; depth=5, n_steps=1)
 ```
 
 ## Evaluating Solution
 
-The feasibility, distance, and a visual representation of a solution can be obtained using fuctions from the `HashCode2014.jl` dependency:
+Use the following functions to determine the feasibility, score, and to generate a visual representation of the solution:
 
 ```julia
 using HashCode2014
 
 # determine feasibility of solution
-julia> is_feasible(solution, city)
+julia> check_solution_feasibility(solution, city_problem)
 
 # determine distance of solution
-julia> total_distance(solution, city)
+julia> get_solution_distance(solution, city_problem)
 
 # generate visual representation of solution
 julia> plot_streets(city_object, solution; path="solution_plot.html")
