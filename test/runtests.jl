@@ -43,6 +43,22 @@ DocMeta.setdocmeta!(
             data=data3, graph=prob.graph, penalty_function=prob.penalty_function
         )
         @test ~check_solution_feasibility(sol, prob)
+        
+        data4 = SuperStreetViewRouter.CityData(;
+            total_duration=prob.data.total_duration - 10000,
+            nb_cars=prob.data.nb_cars,
+            starting_junction=prob.data.starting_junction,
+        )
+        prob = CityProblem(;
+            data=data4, graph=prob.graph, penalty_function=prob.penalty_function
+        )
+        @test ~check_solution_feasibility(sol, prob)
+        
+        sol.itineraries[2][1] += 1
+        @test ~check_solution_feasibility(sol, prob)
+        
+        sol.itineraries[1][2] = -1
+        @test ~check_solution_feasibility(sol, prob)
     end
     @testset verbose = true "Solution Distance" begin
         prob = CityProblem()
