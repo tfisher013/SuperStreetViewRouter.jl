@@ -43,7 +43,7 @@ DocMeta.setdocmeta!(
             data=data3, graph=prob.graph, penalty_function=prob.penalty_function
         )
         @test ~check_solution_feasibility(sol, prob)
-        
+
         data4 = SuperStreetViewRouter.CityData(;
             total_duration=prob.data.total_duration - 10000,
             nb_cars=prob.data.nb_cars,
@@ -53,10 +53,10 @@ DocMeta.setdocmeta!(
             data=data4, graph=prob.graph, penalty_function=prob.penalty_function
         )
         @test ~check_solution_feasibility(sol, prob)
-        
+
         sol.itineraries[2][1] += 1
         @test ~check_solution_feasibility(sol, prob)
-        
+
         sol.itineraries[1][2] = -1
         @test ~check_solution_feasibility(sol, prob)
     end
@@ -108,5 +108,22 @@ DocMeta.setdocmeta!(
     @testset verbose = true "get_total_city_length" begin
         city = read_city()
         @test get_total_city_length(city) == 1967444
+    end
+
+    # test penalty functions
+    @testset verbose = true "test penalty functions" begin
+        pre_penalty_val = 5
+        penalty_function = SuperStreetViewRouter.ExponentialPenalty()
+
+        @test apply_penalty(pre_penalty_val, 0, penalty_function) == pre_penalty_val
+        @test apply_penalty(pre_penalty_val, 1, penalty_function) < pre_penalty_val
+
+        penalty_function = SuperStreetViewRouter.NoPenalty()
+        @test apply_penalty(pre_penalty_val, 0, penalty_function) == pre_penalty_val
+        @test apply_penalty(pre_penalty_val, 1, penalty_function) == pre_penalty_val
+
+        penalty_function = SuperStreetViewRouter.LinearPenalty(2)
+        @test apply_penalty(pre_penalty_val, 0, penalty_function) == pre_penalty_val
+        @test apply_penalty(pre_penalty_val, 1, penalty_function) < pre_penalty_val
     end
 end

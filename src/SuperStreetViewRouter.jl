@@ -6,7 +6,8 @@ using HashCode2014
 using Statistics
 
 export CityProblem, solve
-export check_solution_feasibility,
+export apply_penalty,
+    check_solution_feasibility,
     get_possible_streets,
     get_possible_paths,
     get_solution_distance,

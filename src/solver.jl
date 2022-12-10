@@ -1,15 +1,11 @@
 """
 
-    solve_graph_greedy(prob::CityProblem; depth=5, n_steps=1)
+    solve(prob::CityProblem; depth=5, n_steps=1)
 
-Generates a greedy solution to the provided city, or uses the default
-city if none is provided. The greedy algorithm can be described as follows:
-    - At each junction, the car will choose to traverse the street with the
-    highest "value" = length / time.
-    - Traversed streets will be recorded.
-    - Traversed streets will have their length decreased by a constant factor
-    to discourage but allow usage. This constant is likely responsive to
-    optimization.
+Generates a `Solution` object to the provided `CityProblem``, or uses the default
+city if none is provided. The depth parameter specifies the depth of the
+performed BFS and n_steps specifices how many steps to traverse the chosen
+BFS path per iteration.
 """
 function solve(prob::CityProblem; depth=5, n_steps=1)
     city_data = prob.data
