@@ -122,6 +122,10 @@ DocMeta.setdocmeta!(
         @test apply_penalty(pre_penalty_val, 0, penalty_function) == pre_penalty_val
         @test apply_penalty(pre_penalty_val, 1, penalty_function) == pre_penalty_val
 
+        penalty_function = SuperStreetViewRouter.ConstantPenalty(2)
+        @test apply_penalty(pre_penalty_val, 0, penalty_function) == pre_penalty_val
+        @test apply_penalty(pre_penalty_val, 1, penalty_function) < pre_penalty_val
+
         penalty_function = SuperStreetViewRouter.LinearPenalty(2)
         @test apply_penalty(pre_penalty_val, 0, penalty_function) == pre_penalty_val
         @test apply_penalty(pre_penalty_val, 1, penalty_function) < pre_penalty_val
